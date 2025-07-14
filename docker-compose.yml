@@ -18,6 +18,9 @@ services:
     container_name: sya-api
     ports:
       - "3001:3001" 
+    environment:
+      - SERVER_ADDR=0.0.0.0:3001
+      - OLLAMA_URL=http://ollama:11434/
     networks:
       - sya-net
     depends_on:
