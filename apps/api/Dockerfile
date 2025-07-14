@@ -11,23 +11,21 @@ RUN apt-get update && apt-get install -y \
     curl \
  && rm -rf /var/lib/apt/lists/*
 
-# Définir le répertoire de travail
 WORKDIR /usr/src/app
 
-# Copier uniquement les fichiers Cargo pour optimiser le cache
+# Étape 1 – Préparer le cache
 COPY Cargo.toml Cargo.lock ./
-COPY .env .env
 
-# Préparer les dépendances pour cache Docker
+# Dummy pour le cache uniquement
 RUN mkdir -p src && echo "fn main() {}" > src/main.rs && \
     cargo build --release && \
     rm -r src
 
-# Copier le reste de l'application
+# Étape 2 – Copier le code réel
 COPY . .
 
-# Compiler le projet
-RUN cargo build --release
+# 🔥 Recompile en forçant la recompilation propre (clean)
+RUN cargo clean && cargo build --release && \
+    cp target/release/api /usr/local/bin/sya-api
 
-# Définir le point d'entrée
-CMD ["./target/release/api"]
+CMD ["/usr/local/bin/sya-api"]
