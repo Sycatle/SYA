@@ -1,24 +1,31 @@
-use actix_web::{App, HttpServer};
+use actix_web::{App, HttpServer, web};
 
 mod config;
-mod handlers;
 mod routes;
+mod handlers;
 mod services;
+mod models;
 
-use crate::config::Config;
-use crate::routes::register_routes;
+use config::Config;
+use routes::register_routes;
+use services::ollama::OllamaService;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenvy::dotenv().ok(); // 👈 charge le .env
+    dotenvy::dotenv().ok();
     let config = Config::from_env();
-    
-    println!("✅ API démarrée sur http://{}", config.server_addr);
+    let server_addr = config.server_addr.clone();
+    let ollama_service = OllamaService::new(config.ollama_url.clone());
+
+    println!("✅ API démarrée sur http://{}", server_addr);
 
     HttpServer::new(move || {
-        App::new().configure(register_routes)
+        App::new()
+            .app_data(web::Data::new(config.clone()))
+            .app_data(web::Data::new(ollama_service.clone()))
+            .configure(register_routes)
     })
-    .bind(&config.server_addr)? // <- important : doit être 0.0.0.0
+    .bind(&server_addr)?
     .run()
     .await
 }

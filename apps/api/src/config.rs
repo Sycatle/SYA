@@ -1,5 +1,6 @@
 use std::env;
 
+#[derive(Clone)]
 pub struct Config {
     pub server_addr: String,
     pub ollama_url: String,
@@ -8,8 +9,8 @@ pub struct Config {
 impl Config {
     pub fn from_env() -> Self {
         Self {
-            server_addr: env::var("SERVER_ADDR").expect("SERVER_ADDR not set"),
-            ollama_url: env::var("OLLAMA_URL").expect("OLLAMA_URL not set"),
+            server_addr: env::var("SERVER_ADDR").unwrap_or_else(|_| "0.0.0.0:3001".to_string()),
+            ollama_url: env::var("OLLAMA_URL").unwrap_or_else(|_| "http://ollama:11434/".to_string()),
         }
     }
 }
