@@ -1,40 +1,112 @@
-# SYA Monorepo
+# SYA 🧠 – Self Your Assistant
 
-This repository contains the different services that form the **SYA** project. It is managed using [Turborepo](https://turbo.build/) with [pnpm](https://pnpm.io/) workspaces.
+SYA est un assistant personnel **open-source**, **modulaire** et **auto-hébergé**, conçu pour tourner localement sans dépendre d’un cloud tiers.  
+C’est votre **Jarvis** personnel, tournant à la maison, basé sur des modèles IA puissants comme LLaMA 3, Mistral, etc.
 
-## Project structure
+Ce monorepo est géré avec [Turborepo](https://turbo.build/) et [pnpm](https://pnpm.io/), et regroupe tous les services de l’écosystème SYA : le moteur IA, l’API, l’interface utilisateur et les composants partagés.
+
+---
+
+## ✨ Fonctionnalités
+
+- 🔒 100 % local, sécurisé et respectueux de la vie privée
+- 🧠 Serveur IA Ollama (support GPU)
+- ⚙️ API REST en Rust avec Actix Web
+- 💬 Interface de chat moderne en Next.js + TailwindCSS
+- 🔄 Communication API REST, WebSocket (à venir)
+- 🧩 Architecture modulaire avec Turborepo
+- 📦 Librairie de composants UI partagés
+
+---
+
+## 🗂️ Arborescence
 
 ```
-apps/      - runnable applications
-  api/     - Rust API using Actix Web
-  web/     - Next.js frontend
-packages/  - shared libraries and configuration
-  eslint-config/      - shared ESLint configs
-  typescript-config/  - shared TypeScript configs
-  ui/                 - React component library
+apps/
+  api/        - API Rust (Actix Web)
+  web/        - Frontend Next.js avec App Router
+
+packages/
+  ui/                 - Librairie de composants React
+  eslint-config/      - Configuration ESLint partagée
+  typescript-config/  - Configuration TypeScript partagée
+
+data/
+  ollama/             - Volume Docker pour les modèles LLM
+
+docker-compose.yml    - Orchestration des services via Docker
 ```
 
-## Commands
+---
 
-Run tasks through the root `package.json` scripts:
+## 🛠️ Commandes
+
+Exécutables depuis la racine du projet :
 
 ```bash
-pnpm dev         # start all apps in development mode
-pnpm lint        # run ESLint in all packages
-pnpm check-types # run TypeScript type checks
-pnpm build       # build all applications and packages
+pnpm dev           # Démarre tous les services en mode dev
+pnpm lint          # Lint sur tous les packages
+pnpm check-types   # Vérification des types TypeScript
+pnpm build         # Build complet des apps et packages
 ```
 
-The Rust API can also be built and run via `cargo` or using `docker-compose`.
-
-## Docker
-
-`docker-compose.yml` provides services for the API and an optional `ollama` service used during development.
+Pour l'API Rust uniquement :
 
 ```bash
-docker compose up --build
+cd apps/api
+cargo run
 ```
 
-## License
+---
 
-MIT
+## 🐳 Docker
+
+L’environnement de dev est orchestré avec Docker :
+
+```bash
+docker compose up -d --build
+```
+
+### Services inclus
+
+- `ollama` : moteur IA (avec GPU si disponible)
+- `sya-api` : API Rust connectée à Ollama
+
+Les modèles sont persistés dans `./data/ollama`.
+
+---
+
+## 📅 Roadmap (v0.x)
+
+- ✅ Base monorepo avec API + Web + Ollama
+- 🧠 Intégration LLaMA 3 localement
+- 🧪 API REST stateless pour communication front/back
+- ⏳ WebSocket temps réel
+- ⏳ Authentification et sessions utilisateurs
+- ⏳ Gestion de mémoire longue (contexte + souvenirs)
+- ⏳ Intégrations IA : calendrier, domotique, clipboard, etc.
+- ⏳ Interface conversationnelle contextuelle (multi-agents)
+
+---
+
+## 🛡️ Licence
+
+MIT – Utilisation libre pour usage personnel et professionnel.  
+Mention du projet recommandée en cas d’intégration commerciale.
+
+---
+
+## 🤝 Contribuer
+
+Le projet est encore jeune. Toutes suggestions, PR ou retours sont les bienvenus.  
+📫 Contact : [sycatle@pm.me](mailto:sycatle@pm.me)
+
+---
+
+## 🔗 Liens utiles
+
+- [Ollama](https://ollama.com)
+- [Actix Web](https://actix.rs/)
+- [Turborepo](https://turbo.build/)
+- [pnpm](https://pnpm.io/)
+- [Next.js](https://nextjs.org/)
