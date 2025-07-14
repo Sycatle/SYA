@@ -1,3 +1,13 @@
-// Data models used across handlers and services can be placed here.
-// Currently not used but provided for future scalability.
+use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Message {
+    pub role: String,
+    pub content: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ChatRequest {
+    pub prompt: String,
+    pub history: Vec<Message>,
+}

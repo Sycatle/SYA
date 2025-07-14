@@ -1,3 +1,4 @@
+use crate::models::Message;
 use reqwest::Client;
 
 #[derive(Clone)]
@@ -19,5 +20,22 @@ impl OllamaService {
         let status = response.status();
         let body = response.text().await?;
         Ok(format!("Status: {}, Body: {}", status, body))
+    }
+
+    pub async fn generate(
+        &self,
+        prompt: &str,
+        history: &[Message],
+    ) -> Result<serde_json::Value, reqwest::Error> {
+        let url = format!("{}/api/generate", self.base_url.trim_end_matches('/'));
+        let payload = serde_json::json!({
+            "model": "mistral",
+            "prompt": prompt,
+            "messages": history,
+        });
+
+        let resp = self.client.post(url).json(&payload).send().await?;
+        let json = resp.json::<serde_json::Value>().await?;
+        Ok(json)
     }
 }

@@ -1,10 +1,11 @@
-use actix_web::{App, HttpServer, web};
+use actix_cors::Cors;
+use actix_web::{web, App, HttpServer};
 
 mod config;
-mod routes;
 mod handlers;
-mod services;
 mod models;
+mod routes;
+mod services;
 
 use config::Config;
 use routes::register_routes;
@@ -21,6 +22,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(Cors::permissive())
             .app_data(web::Data::new(config.clone()))
             .app_data(web::Data::new(ollama_service.clone()))
             .configure(register_routes)
