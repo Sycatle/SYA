@@ -31,10 +31,12 @@ packages/
   eslint-config/      - Configuration ESLint partagée
   typescript-config/  - Configuration TypeScript partagée
 
-data/
-  ollama/             - Volume Docker pour les modèles LLM
-
-docker-compose.yml    - Orchestration des services via Docker
+.husky/               - Hooks Git (commit et lint)
+package.json          - Scripts et dépendances globales
+pnpm-workspace.yaml   - Définition du monorepo pnpm
+turbo.json            - Configuration Turborepo
+docker-compose.yml    - Orchestration des services Docker
+data/ (ignoré)        - Volume pour les modèles Ollama
 ```
 
 ---

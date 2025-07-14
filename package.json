@@ -6,6 +6,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test": "echo \"No tests yet\" && exit 0",
     "check-types": "turbo run check-types",
     "prepare": "husky install",
     "commit": "cz"
