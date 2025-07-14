@@ -11,6 +11,12 @@ services:
         reservations:
           devices:
             - capabilities: [gpu]
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - OLLAMA_DEBUG=INFO
+      - OLLAMA_HOST=http://0.0.0.0:11434
 
   api:
     build:
