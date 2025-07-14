@@ -1,0 +1,28 @@
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    networks:
+      - sya-net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  api:
+    build:
+      context: ./apps/api
+    container_name: sya-api
+    ports:
+      - "3001:3001" 
+    networks:
+      - sya-net
+    depends_on:
+      - ollama
+
+networks:
+  sya-net:
+    driver: bridge

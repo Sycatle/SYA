@@ -1,0 +1,53 @@
+# --- NODE / JS ---
+node_modules/
+.pnp/
+.pnp.js
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env vars
+.env
+.env.*
+!.env.example
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+coverage/
+.turbo/
+.vercel/
+
+# --- RUST ---
+target/
+Cargo.lock
+
+# --- DOCKER ---
+*.tar
+*.pid
+*.sock
+docker-compose.override.yml
+.docker/
+
+# --- OS-SPECIFIC ---
+.DS_Store
+Thumbs.db
+
+# --- EDITOR / IDE ---
+.vscode/
+.idea/
+*.swp
+*~
+
+# --- MISC ---
+*.pem
+*.crt
+*.key
+*.bak
+*.tmp
+*.orig
+data/
