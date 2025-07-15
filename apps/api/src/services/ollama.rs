@@ -29,7 +29,7 @@ impl OllamaService {
     ) -> Result<serde_json::Value, reqwest::Error> {
         let url = format!("{}/api/generate", self.base_url.trim_end_matches('/'));
         let payload = serde_json::json!({
-            "model": "mistral",
+            "model": "llama3",
             "prompt": prompt,
             "messages": history,
         });
