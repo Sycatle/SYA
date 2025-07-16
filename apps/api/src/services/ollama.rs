@@ -1,4 +1,5 @@
 use crate::models::Message;
+use crate::globals::GLOBAL_HISTORY;
 use reqwest::Client;
 use std::error::Error;
 
@@ -26,22 +27,40 @@ impl OllamaService {
     pub async fn generate(
         &self,
         prompt: &str,
-        history: &[Message],
     ) -> Result<serde_json::Value, Box<dyn Error>> {
-        let url = format!("{}/api/generate", self.base_url.trim_end_matches('/'));
+        let url = format!("{}/api/chat", self.base_url.trim_end_matches('/'));
+
+        // ⬇️ On récupère l'historique existant et ajoute le prompt
+        let mut history = GLOBAL_HISTORY.write().unwrap();
+        history.push(Message {
+            role: "user".to_string(),
+            content: prompt.to_string(),
+        });
+
         let payload = serde_json::json!({
             "model": "llama3",
-            "prompt": prompt,
-            "messages": history,
+            "messages": &*history,
             "stream": false,
         });
 
-        let resp = self.client.post(url).json(&payload).send().await?;
+        let resp = self.client.post(&url).json(&payload).send().await?;
         let text = resp.text().await?;
 
         println!("RAW Ollama response: {}", text);
 
-        let json: serde_json::Value = serde_json::from_str(&text)?; // ✅ fonctionne maintenant
+        let json: serde_json::Value = serde_json::from_str(&text)?;
+
+        // ⬇️ On extrait la réponse du modèle et l’ajoute à l’historique
+        if let Some(assistant_msg) = json.get("message") {
+            if let Some(content) = assistant_msg.get("content").and_then(|v| v.as_str()) {
+                history.push(Message {
+                    role: "assistant".to_string(),
+                    content: content.to_string(),
+                });
+            }
+        }
+
         Ok(json)
     }
+
 }

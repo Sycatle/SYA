@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Message {
     pub role: String,
     pub content: String,
@@ -9,5 +9,4 @@ pub struct Message {
 #[derive(Debug, Deserialize)]
 pub struct ChatRequest {
     pub prompt: String,
-    pub history: Vec<Message>,
 }

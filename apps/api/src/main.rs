@@ -6,6 +6,7 @@ mod handlers;
 mod models;
 mod routes;
 mod services;
+mod globals;
 
 use config::Config;
 use routes::register_routes;
