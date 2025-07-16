@@ -1,79 +1,72 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import clsx from 'clsx'
+import Image from "next/image";
+import clsx from "clsx";
 
 interface Message {
-  isQuestion: boolean
-  content: string
-  background?: boolean
-  classes?: string[]
+	isQuestion: boolean;
+	content: string;
+	background?: boolean;
+	classes?: string[];
 }
 
 interface MessagesProps {
-  messages: Message[]
-  username: string
+	messages: Message[];
+	username: string;
 }
 
 export default function Messages({ messages, username }: MessagesProps) {
-  return (
-    <div className="px-1 min-h-screen flex flex-col space-y-2">
-      {[...messages].reverse().map((message, index) => {
-        const timestamp = new Date().toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
+	return (
+		<div className="flex flex-col gap-8 max-w-7xl mx-auto py-24 px-4 min-h-screen">
+			{messages.map((message, index) => {
+				const timestamp = new Date().toLocaleTimeString("fr-FR", {
+					hour: "2-digit",
+					minute: "2-digit",
+				});
 
-        if (message.isQuestion) {
-          return (
-            <div
-              key={`question-${index}`}
-              className="flex flex-col relative space-y-1 p-2 rounded"
-            >
-              <div className="group flex relative items-center space-x-2 p-2 rounded">
-                <Image
-                  src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent(username)}`}
-                  alt={`Avatar de ${username}`}
-                  width={40}
-                  height={40}
-                  className="h-8 w-8 lg:h-10 lg:w-10 rounded-full duration-200"
-                />
-                <p className="break-words">{message.content}</p>
+				const isUser = message.isQuestion;
 
-                <span className="hidden absolute right-0 top-0 text-sm p-1 lg:group-hover:flex font-thin text-gray-400">
-                  {timestamp}
-                </span>
-              </div>
-            </div>
-          )
-        }
+				return (
+					<div
+						key={index}
+						className={clsx(
+							"flex items-start",
+							isUser ? "justify-end" : "justify-start",
+						)}>
+						<div
+							className={clsx(
+								"flex items-start max-w-[75%] space-x-3",
+								isUser && "flex-row-reverse space-x-reverse",
+							)}>
+							<Image
+								src={
+									isUser
+										? `https://eu.ui-avatars.com/api/?name=${encodeURIComponent(username)}&format=webp`
+										: "/sya_logo.jpg"
+								}
+								alt={isUser ? `Avatar de ${username}` : "Logo de SYA"}
+								width={40}
+								height={40}
+								className="h-10 w-10 rounded-full"
+							/>
 
-        return (
-          <div
-            key={`response-${index}`}
-            className={clsx(
-              'group flex relative items-start space-x-2 p-2 rounded',
-              message.background && 'bg-zinc-100 dark:bg-zinc-800',
-              message.classes
-            )}
-          >
-            <Image
-              src="/sya_logo.jpg"
-              alt="Logo de SYA"
-              width={40}
-              height={40}
-              className="h-8 w-8 lg:h-10 lg:w-10 rounded-full mb-auto duration-200 group-hover:shadow-lg"
-              priority
-            />
-
-            <div className="break-words">{message.content}</div>
-
-            <span className="hidden absolute right-0 top-0 text-sm p-1 lg:group-hover:flex font-thin text-gray-400">
-              {timestamp}
-            </span>
-          </div>
-        )
-      })}
-    </div>
-  )
+							<div
+								className={clsx(
+									"relative p-3 rounded-xl text-sm whitespace-pre-wrap",
+									isUser
+										? "bg-blue-600 text-white"
+										: "bg-zinc-100 dark:bg-zinc-800 dark:text-white",
+									message.classes,
+								)}>
+								{message.content}
+								<span className="absolute -bottom-5 right-1 text-xs text-gray-400 hidden lg:inline">
+									{timestamp}
+								</span>
+							</div>
+						</div>
+					</div>
+				);
+			})}
+		</div>
+	);
 }
