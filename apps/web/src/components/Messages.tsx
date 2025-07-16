@@ -54,8 +54,8 @@ export default function Messages({ messages, username }: MessagesProps) {
 								className={clsx(
 									"relative p-3 rounded-xl text-sm whitespace-pre-wrap",
 									isUser
-										? "bg-blue-600 text-white"
-										: "bg-zinc-100 dark:bg-zinc-800 dark:text-white",
+										? "bg-zinc-100 dark:bg-zinc-800 dark:text-white"
+										: "bg-zinc-200 dark:bg-zinc-700 dark:text-white",
 									message.classes,
 								)}>
 								{message.content}

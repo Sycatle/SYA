@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import ChatInput from "@web/components/ChatInput";
 import Messages from "@web/components/Messages";
-import { sendPrompt, Message as ApiMessage } from "../../lib/api";
+import { sendPrompt } from "../../lib/api";
 
 interface ChatMessage {
   isQuestion: boolean;
@@ -16,23 +16,58 @@ export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const username = "Charlie";
+  const messagesRef = useRef(messages);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  const typeMessage = async (text: string, index: number) => {
+    for (let i = 0; i < text.length; i++) {
+      await new Promise((r) => setTimeout(r, 25));
+      setMessages((prev) => {
+        const newPrev = [...prev];
+        if (newPrev[index]) {
+          newPrev[index] = {
+            ...newPrev[index],
+            content: newPrev[index].content + text[i],
+          };
+        }
+        return newPrev;
+      });
+    }
+  };
 
   const handleSend = async (prompt: string) => {
-    setMessages((prev) => [...prev, { isQuestion: true, content: prompt }]);
+    const userMessage: ChatMessage = {
+      isQuestion: true,
+      content: prompt,
+    };
+
+    // 1. Afficher le message utilisateur
+    setMessages((prev) => [...prev, userMessage]);
+
+    // 2. Placeholder pour la réponse vide
+    const assistantMessage: ChatMessage = {
+      isQuestion: false,
+      content: "",
+    };
+
     setIsLoading(true);
 
-    try {
-      const history: ApiMessage[] = messages.map((m) => ({
-        role: m.isQuestion ? "user" : "assistant",
-        content: m.content,
-      }));
+    let assistantIndex = -1;
 
-      const res = await sendPrompt(prompt, history);
+    setMessages((prev) => {
+      const updated = [...prev, assistantMessage];
+      assistantIndex = updated.length - 1;
+      return updated;
+    });
+
+    try {
+      const res = await sendPrompt(prompt);
+
       if (res.response) {
-        setMessages((prev) => [
-          ...prev,
-          { isQuestion: false, content: res.response },
-        ]);
+        await typeMessage(res.response, assistantIndex);
       }
     } catch (error) {
       console.error(error);
