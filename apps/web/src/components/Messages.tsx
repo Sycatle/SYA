@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import clsx from 'clsx'
 
 interface Message {
   isQuestion: boolean
@@ -14,64 +17,63 @@ interface MessagesProps {
 
 export default function Messages({ messages, username }: MessagesProps) {
   return (
-    <div className="px-1 flex flex-col space-y-2">
-      {messages
-        .slice(0)
-        .reverse()
-        .map((message, index) =>
-          message.isQuestion ? (
+    <div className="px-1 min-h-screen flex flex-col space-y-2">
+      {[...messages].reverse().map((message, index) => {
+        const timestamp = new Date().toLocaleTimeString('fr-FR', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+
+        if (message.isQuestion) {
+          return (
             <div
               key={`question-${index}`}
               className="flex flex-col relative space-y-1 p-2 rounded"
             >
               <div className="group flex relative items-center space-x-2 p-2 rounded">
-                <img
-                  src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent(username)}`}
-                  alt={`Avatar for ${username}`}
-                  className="h-8 w-8 lg:h-10 lg:w-10 rounded-full duration-200"
-                />
-                <p>{message.content}</p>
-
-                <div className="hidden absolute right-0 top-0 text-sm p-1 lg:group-hover:flex font-thin text-gray-400">
-                  {new Date().toLocaleTimeString()}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div
-              key={`response-${index}`}
-              className={[
-                'group',
-                'flex',
-                'relative',
-                'items-center',
-                'space-x-2',
-                'p-2',
-                'rounded',
-                ...(message.background
-                  ? ['bg-zinc-100', 'dark:bg-zinc-800']
-                  : []),
-                ...(message.classes || [])
-              ].join(' ')}
-            >
-              <div className="flex items-center space-x-2">
                 <Image
-                  src="public/sya_logo.jpg"
-                  alt="Logo de SYA"
+                  src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent(username)}`}
+                  alt={`Avatar de ${username}`}
                   width={40}
                   height={40}
-                  className="h-8 w-8 lg:h-10 lg:w-10 rounded-full mb-auto duration-200 group-hover:shadow-lg"
+                  className="h-8 w-8 lg:h-10 lg:w-10 rounded-full duration-200"
                 />
-              </div>
+                <p className="break-words">{message.content}</p>
 
-              <div>{message.content}</div>
-
-              <div className="hidden absolute right-0 top-0 text-sm p-1 lg:group-hover:flex font-thin text-gray-400">
-                {new Date().toLocaleTimeString()}
+                <span className="hidden absolute right-0 top-0 text-sm p-1 lg:group-hover:flex font-thin text-gray-400">
+                  {timestamp}
+                </span>
               </div>
             </div>
           )
-        )}
+        }
+
+        return (
+          <div
+            key={`response-${index}`}
+            className={clsx(
+              'group flex relative items-start space-x-2 p-2 rounded',
+              message.background && 'bg-zinc-100 dark:bg-zinc-800',
+              message.classes
+            )}
+          >
+            <Image
+              src="/sya_logo.jpg"
+              alt="Logo de SYA"
+              width={40}
+              height={40}
+              className="h-8 w-8 lg:h-10 lg:w-10 rounded-full mb-auto duration-200 group-hover:shadow-lg"
+              priority
+            />
+
+            <div className="break-words">{message.content}</div>
+
+            <span className="hidden absolute right-0 top-0 text-sm p-1 lg:group-hover:flex font-thin text-gray-400">
+              {timestamp}
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }
