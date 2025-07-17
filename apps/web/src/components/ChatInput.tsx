@@ -29,7 +29,7 @@ export default function ChatInput({
 		<form
 			onSubmit={handleSubmit}
 			className="fixed bottom-0 w-full flex items-center gap-2 left-0 z-50 backdrop-blur-lg bg-zinc-50/75 dark:bg-zinc-900/75 text-black dark:text-white transition duration-300 font-semibold">
-			<div className="flex w-full items-center justify-between max-w-7xl mx-auto p-4">
+			<div className="flex w-full items-center justify-between max-w-6xl mx-auto p-4">
 				<input
 					type="text"
 					value={message}

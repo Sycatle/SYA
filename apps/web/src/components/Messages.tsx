@@ -17,7 +17,7 @@ interface MessagesProps {
 
 export default function Messages({ messages, username }: MessagesProps) {
 	return (
-		<div className="flex flex-col gap-8 max-w-7xl mx-auto py-24 px-4 min-h-screen">
+		<div className="flex flex-col gap-10 max-w-6xl mx-auto py-28 px-4 min-h-screen">
 			{messages.map((message, index) => {
 				const timestamp = new Date().toLocaleTimeString("fr-FR", {
 					hour: "2-digit",
@@ -35,7 +35,7 @@ export default function Messages({ messages, username }: MessagesProps) {
 						)}>
 						<div
 							className={clsx(
-								"flex items-start max-w-[75%] space-x-3",
+								"flex items-start lg:max-w-[85%] space-x-3",
 								isUser && "flex-row-reverse space-x-reverse",
 							)}>
 							<Image
@@ -52,14 +52,14 @@ export default function Messages({ messages, username }: MessagesProps) {
 
 							<div
 								className={clsx(
-									"relative p-3 rounded-xl text-sm whitespace-pre-wrap",
+									"group relative text-lg rounded-xl whitespace-pre-wrap ",
 									isUser
-										? "bg-zinc-100 dark:bg-zinc-800 dark:text-white"
-										: "bg-zinc-200 dark:bg-zinc-700 dark:text-white",
+										? "p-3 bg-zinc-100 dark:bg-zinc-800 dark:text-white"
+										: "px-3 dark:text-white",
 									message.classes,
 								)}>
 								{message.content}
-								<span className="absolute -bottom-5 right-1 text-xs text-gray-400 hidden lg:inline">
+								<span className="hidden lg:group-hover:inline absolute -bottom-5 right-1 text-xs text-gray-400">
 									{timestamp}
 								</span>
 							</div>

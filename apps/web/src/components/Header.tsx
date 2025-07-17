@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Header() {
 	return (
 		<header className="fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-zinc-50/75 dark:bg-zinc-900/75 text-black dark:text-white transition duration-300 font-semibold">
-			<div className="flex items-center justify-between max-w-7xl mx-auto p-4">
+			<div className="flex items-center justify-between mx-auto p-4">
 				{/* Logo */}
 				<Link
 					href="/"
@@ -45,14 +46,15 @@ export default function Header() {
 					<button
 						title="Se déconnecter"
 						aria-label="Se déconnecter"
-						className="flex items-center border rounded-full p-2 lg:p-3 group transition-all hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
+						className="flex items-center border-2 rounded-full overflow-hidden"
 						onClick={() => console.log("Logout")}>
-						<svg
-							className="h-6 w-6"
-							fill="currentColor"
-							viewBox="0 0 24 24">
-							<path d="M14.08 15.59L16.67 13H7v-2h9.67l-2.59-2.59L15.5 7l5 5-5 5-1.42-1.41ZM19 3a2 2 0 012 2v4.67l-2-2V5H5v14h14v-2.67l2-2V19a2 2 0 01-2 2H5a2 2 0 01-2-2V5c0-1.11.89-2 2-2h14Z" />
-						</svg>
+						<Image
+							src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent("Charlie")}&format=webp`}
+							alt={`Avatar de ${"Charlie"}`}
+							width={40}
+							height={40}
+							className="h-10 w-10"
+						/>
 					</button>
 				</nav>
 			</div>
