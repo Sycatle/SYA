@@ -48,19 +48,20 @@ services:
     networks:
       - sya-net
 
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    container_name: sya-web
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://api:3001
-    networks:
-      - sya-net
-    depends_on:
-      - api
+  # TODO: On production only, use pnpm run dev for developement.
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/web/Dockerfile
+  #   container_name: sya-web
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NEXT_PUBLIC_API_URL=http://localhost:3001
+  #   networks:
+  #     - sya-net
+  #   depends_on:
+  #     - api
 
 networks:
   sya-net:
