@@ -44,10 +44,10 @@ export default function Header() {
 				{/* Actions */}
 				<nav className="flex items-center space-x-2">
 					<button
-						title="Se déconnecter"
-						aria-label="Se déconnecter"
+						title="Profil de Charlie"
+						aria-label="Accéder au profil"
 						className="flex items-center border-2 rounded-full overflow-hidden"
-						onClick={() => console.log("Logout")}>
+						onClick={() => console.log("Profile")}>
 						<Image
 							src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent("Charlie")}&format=webp`}
 							alt={`Avatar de ${"Charlie"}`}
