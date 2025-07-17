@@ -69,10 +69,17 @@ L’environnement de dev est orchestré avec Docker :
 docker compose up -d --build
 ```
 
+Pour développer uniquement l'interface Next.js via Docker :
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up web
+```
+
 ### Services inclus
 
 - `ollama` : moteur IA (avec GPU si disponible)
 - `sya-api` : API Rust connectée à Ollama
+- `sya-web` : interface chat Next.js
 - `sya-db` : base de données PostgreSQL
 
 Les modèles sont persistés dans `./data/ollama` et les données PostgreSQL dans `./data/db`.

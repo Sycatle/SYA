@@ -1,0 +1,18 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: dev
+    container_name: sya-web-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:3001
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - sya-net
+    depends_on:
+      - api
