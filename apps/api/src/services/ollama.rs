@@ -1,5 +1,5 @@
-use crate::models::Message;
 use crate::globals::GLOBAL_HISTORY;
+use crate::models::Message;
 use reqwest::Client;
 use std::error::Error;
 
@@ -24,10 +24,7 @@ impl OllamaService {
         Ok(format!("Status: {}, Body: {}", status, body))
     }
 
-    pub async fn generate(
-        &self,
-        prompt: &str,
-    ) -> Result<serde_json::Value, Box<dyn Error>> {
+    pub async fn generate(&self, prompt: &str) -> Result<serde_json::Value, Box<dyn Error>> {
         let url = format!("{}/api/chat", self.base_url.trim_end_matches('/'));
 
         // ⬇️ On récupère l'historique existant et ajoute le prompt
@@ -62,5 +59,4 @@ impl OllamaService {
 
         Ok(json)
     }
-
 }
