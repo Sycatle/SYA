@@ -73,8 +73,16 @@ docker compose up -d --build
 
 - `ollama` : moteur IA (avec GPU si disponible)
 - `sya-api` : API Rust connectée à Ollama
+- `sya-db` : base de données PostgreSQL
 
-Les modèles sont persistés dans `./data/ollama`.
+Les modèles sont persistés dans `./data/ollama` et les données PostgreSQL dans `./data/db`.
+
+Les migrations SQL sont appliquées automatiquement au démarrage de l'API ou manuellement avec :
+
+```bash
+cd apps/api
+sqlx migrate run
+```
 
 ---
 

@@ -27,10 +27,26 @@ services:
     environment:
       - SERVER_ADDR=0.0.0.0:3001
       - OLLAMA_URL=http://ollama:11434/
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sya_db?schema=public
     networks:
       - sya-net
     depends_on:
       - ollama
+      - db
+
+  db:
+    image: postgres:16
+    container_name: sya-db
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sya_db
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    networks:
+      - sya-net
 
 networks:
   sya-net:
