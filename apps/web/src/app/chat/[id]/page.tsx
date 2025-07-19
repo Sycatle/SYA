@@ -4,45 +4,48 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import ChatInput from "@web/components/ChatInput";
 import Messages from "@web/components/Messages";
+import ChatLayout from "@web/components/ChatLayout";
 import { addMessage, getConversation, MessageRow } from "../../../../lib/api";
 import { useAuth } from "@web/contexts/AuthContext";
 
 interface ChatMessage {
-        isQuestion: boolean;
-        content: string;
-        background?: boolean;
-        classes?: string[];
+	isQuestion: boolean;
+	content: string;
+	background?: boolean;
+	classes?: string[];
 }
 
 export default function Home() {
-        const { user, token, loading } = useAuth();
-        const router = useRouter();
-        const params = useParams();
-        const conversationId = Array.isArray(params.id) ? params.id[0] : (params.id as string);
-        const [messages, setMessages] = useState<ChatMessage[]>([]);
+	const { user, token, loading } = useAuth();
+	const router = useRouter();
+	const params = useParams();
+	const conversationId = Array.isArray(params.id)
+		? params.id[0]
+		: (params.id as string);
+	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const username = user?.display_name || user?.email || "";
 	const messagesRef = useRef(messages);
 
-        useEffect(() => {
-                if (!loading && !token) {
-                        router.push("/login");
-                }
-        }, [loading, token, router]);
+	useEffect(() => {
+		if (!loading && !token) {
+			router.push("/login");
+		}
+	}, [loading, token, router]);
 
-        useEffect(() => {
-                if (token && conversationId) {
-                        getConversation(conversationId, token)
-                                .then((conv) => {
-                                        const history = conv.messages.map((m: MessageRow) => ({
-                                                isQuestion: m.sender_role === "user",
-                                                content: m.content,
-                                        }));
-                                        setMessages(history);
-                                })
-                                .catch((err) => console.error(err));
-                }
-        }, [token, conversationId]);
+	useEffect(() => {
+		if (token && conversationId) {
+			getConversation(conversationId, token)
+				.then((conv) => {
+					const history = conv.messages.map((m: MessageRow) => ({
+						isQuestion: m.sender_role === "user",
+						content: m.content,
+					}));
+					setMessages(history);
+				})
+				.catch((err) => console.error(err));
+		}
+	}, [token, conversationId]);
 
 	useEffect(() => {
 		messagesRef.current = messages;
@@ -89,18 +92,18 @@ export default function Home() {
 			return updated;
 		});
 
-                try {
-                        if (!token) return;
-                        const res = await addMessage(conversationId, prompt, token, "user");
+		try {
+			if (!token) return;
+			const res = await addMessage(conversationId, prompt, token, "user");
 
-                        if (res.content) {
-                                await typeMessage(res.content, assistantIndex);
-                        }
-                } catch (error) {
-                        console.error(error);
-                } finally {
-                        setIsLoading(false);
-                }
+			if (res.content) {
+				await typeMessage(res.content, assistantIndex);
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	if (!token) {
@@ -108,7 +111,7 @@ export default function Home() {
 	}
 
 	return (
-		<>
+		<ChatLayout currentId={conversationId}>
 			<Messages
 				username={username}
 				messages={messages}
@@ -116,7 +119,8 @@ export default function Home() {
 			<ChatInput
 				onSend={handleSend}
 				isLoading={isLoading}
+				offsetLeftClass="left-64"
 			/>
-		</>
+		</ChatLayout>
 	);
 }
