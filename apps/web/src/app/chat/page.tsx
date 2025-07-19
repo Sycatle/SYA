@@ -1,105 +1,64 @@
 "use client";
-
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import ChatInput from "@web/components/ChatInput";
-import Messages from "@web/components/Messages";
-import { sendPrompt } from "../../../lib/api";
+import Link from "next/link";
 import { useAuth } from "@web/contexts/AuthContext";
+import { listConversations, createConversation, Conversation } from "../../../lib/api";
 
-interface ChatMessage {
-	isQuestion: boolean;
-	content: string;
-	background?: boolean;
-	classes?: string[];
-}
+export default function ChatListPage() {
+  const { token, loading } = useAuth();
+  const router = useRouter();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
 
-export default function Home() {
-	const { user, token, loading } = useAuth();
-	const router = useRouter();
-	const [messages, setMessages] = useState<ChatMessage[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	const username = user?.display_name || user?.email || "";
-	const messagesRef = useRef(messages);
+  useEffect(() => {
+    if (!loading && !token) {
+      router.push("/login");
+    }
+  }, [loading, token, router]);
 
-	useEffect(() => {
-		if (!loading && !token) {
-			router.push("/login");
-		}
-	}, [loading, token, router]);
+  useEffect(() => {
+    if (token) {
+      listConversations(token)
+        .then(setConversations)
+        .catch((err) => console.error(err));
+    }
+  }, [token]);
 
-	useEffect(() => {
-		messagesRef.current = messages;
-	}, [messages]);
+  const handleNew = async () => {
+    if (!token) return;
+    try {
+      const conv = await createConversation(token, {});
+      router.push(`/chat/${conv.id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-	const typeMessage = async (text: string, index: number) => {
-		for (let i = 0; i < text.length; i++) {
-			await new Promise((r) => setTimeout(r, 25));
-			setMessages((prev) => {
-				const newPrev = [...prev];
-				if (newPrev[index]) {
-					newPrev[index] = {
-						...newPrev[index],
-						content: newPrev[index].content + text[i],
-					};
-				}
-				return newPrev;
-			});
-		}
-	};
+  if (!token) return <p className="p-4">Chargement...</p>;
 
-	const handleSend = async (prompt: string) => {
-		const userMessage: ChatMessage = {
-			isQuestion: true,
-			content: prompt,
-		};
-
-		// 1. Afficher le message utilisateur
-		setMessages((prev) => [...prev, userMessage]);
-
-		// 2. Placeholder pour la réponse vide
-		const assistantMessage: ChatMessage = {
-			isQuestion: false,
-			content: "",
-		};
-
-		setIsLoading(true);
-
-		let assistantIndex = -1;
-
-		setMessages((prev) => {
-			const updated = [...prev, assistantMessage];
-			assistantIndex = updated.length - 1;
-			return updated;
-		});
-
-		try {
-			const res = await sendPrompt(prompt, token ?? undefined);
-
-			if (res.response) {
-				await typeMessage(res.response, assistantIndex);
-			}
-		} catch (error) {
-			console.error(error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	if (!token) {
-		return <p className="p-4">Chargement...</p>;
-	}
-
-	return (
-		<>
-			<Messages
-				username={username}
-				messages={messages}
-			/>
-			<ChatInput
-				onSend={handleSend}
-				isLoading={isLoading}
-			/>
-		</>
-	);
+  return (
+    <div className="max-w-6xl mx-auto py-28 px-4">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Conversations</h1>
+        <button
+          className="p-2 bg-blue-600 text-white rounded"
+          onClick={handleNew}
+        >
+          Nouvelle conversation
+        </button>
+      </div>
+      <ul className="space-y-2">
+        {conversations.map((c) => (
+          <li key={c.id} className="p-3 bg-zinc-800 rounded">
+            <Link href={`/chat/${c.id}`} className="hover:underline">
+              {c.title}
+            </Link>
+          </li>
+        ))}
+        {conversations.length === 0 && (
+          <li className="text-center text-gray-400">Aucune conversation</li>
+        )}
+      </ul>
+    </div>
+  );
 }
