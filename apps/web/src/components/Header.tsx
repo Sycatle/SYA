@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@web/contexts/AuthContext";
 
 export default function Header() {
+	const { user, token, logout } = useAuth();
+	const router = useRouter();
 	return (
 		<header className="fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-zinc-50/75 dark:bg-zinc-900/75 text-black dark:text-white transition duration-300 font-semibold">
 			<div className="flex items-center justify-between mx-auto p-4">
@@ -43,19 +47,30 @@ export default function Header() {
 
 				{/* Actions */}
 				<nav className="flex items-center space-x-2">
-					<button
-						title="Profil de Charlie"
-						aria-label="Accéder au profil"
-						className="flex items-center border-2 rounded-full overflow-hidden"
-						onClick={() => console.log("Profile")}>
-						<Image
-							src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent("Charlie")}&format=webp`}
-							alt={`Avatar de ${"Charlie"}`}
-							width={40}
-							height={40}
-							className="h-10 w-10"
-						/>
-					</button>
+					{token ? (
+						<button
+							title="Se déconnecter"
+							aria-label="Se déconnecter"
+							className="flex items-center border-2 rounded-full overflow-hidden"
+							onClick={() => {
+								logout();
+								router.push("/login");
+							}}>
+							<Image
+								src={`https://eu.ui-avatars.com/api/?name=${encodeURIComponent(user?.display_name || user?.email || "U")}&format=webp`}
+								alt={`Avatar de ${user?.display_name || user?.email || ""}`}
+								width={40}
+								height={40}
+								className="h-10 w-10"
+							/>
+						</button>
+					) : (
+						<Link
+							href="/login"
+							className="px-4 py-2 bg-blue-600 text-white rounded">
+							Se connecter
+						</Link>
+					)}
 				</nav>
 			</div>
 		</header>
