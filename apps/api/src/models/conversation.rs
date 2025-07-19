@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::models::message::MessageRow;
 
 /// Fallback LLM model used when a client does not specify one.
-pub const DEFAULT_MODEL: &str = "ollama";
+pub const DEFAULT_MODEL: &str = "llama3";
 
 /// Row returned from the `conversations` table.
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
