@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 
+mod auth_extractor;
 mod config;
 mod handlers;
 mod models;
@@ -27,10 +28,8 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("failed to connect to database");
 
-    let conversation_service = services::conversation::ConversationService::new(
-        pool.clone(),
-        ollama_service.clone(),
-    );
+    let conversation_service =
+        services::conversation::ConversationService::new(pool.clone(), ollama_service.clone());
 
     MIGRATOR.run(&pool).await.expect("failed to run migrations");
 
