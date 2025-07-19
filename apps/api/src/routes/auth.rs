@@ -1,6 +1,7 @@
-use actix_web::{web, HttpRequest, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder};
 use sqlx::PgPool;
 
+use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{AuthResponse, LoginRequest, RegisterRequest, User};
 use crate::services::auth::AuthService;
 
@@ -65,28 +66,18 @@ pub async fn login(
 pub async fn me(
     pool: web::Data<PgPool>,
     auth: web::Data<AuthService>,
-    req: HttpRequest,
+    user: AuthenticatedUser,
 ) -> impl Responder {
-    let token = req
-        .headers()
-        .get("Authorization")
-        .and_then(|h| h.to_str().ok())
-        .and_then(|s| s.strip_prefix("Bearer "));
-
-    if let Some(token) = token {
-        if let Some(claims) = auth.verify_token(token) {
-            if let Ok(user) = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
-                .bind(claims.sub)
-                .fetch_one(&**pool)
-                .await
-            {
-                if let Ok(new_token) = auth.generate_token(user.id) {
-                    return HttpResponse::Ok().json(AuthResponse {
-                        token: new_token,
-                        user: user.into(),
-                    });
-                }
-            }
+    if let Ok(db_user) = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+        .bind(user.0)
+        .fetch_one(&**pool)
+        .await
+    {
+        if let Ok(new_token) = auth.generate_token(db_user.id) {
+            return HttpResponse::Ok().json(AuthResponse {
+                token: new_token,
+                user: db_user.into(),
+            });
         }
     }
 
