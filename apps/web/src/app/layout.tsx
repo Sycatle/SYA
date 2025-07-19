@@ -9,18 +9,18 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-        children,
+	children,
 }: Readonly<{
-        children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-        return (
-                <html lang="fr">
-                        <body className={`antialiased`}>
-                                <AuthProvider>
-                                        <Header />
-                                        <main className="bg-zinc-900 text-gray-200">{children}</main>
-                                </AuthProvider>
-                        </body>
-                </html>
-        );
+	return (
+		<html lang="fr">
+			<body className={`antialiased`}>
+				<AuthProvider>
+					<Header />
+					<main className="bg-zinc-900 text-gray-200">{children}</main>
+				</AuthProvider>
+			</body>
+		</html>
+	);
 }

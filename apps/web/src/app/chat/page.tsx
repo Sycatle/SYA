@@ -15,18 +15,18 @@ interface ChatMessage {
 }
 
 export default function Home() {
-        const { user, token, loading } = useAuth();
-        const router = useRouter();
-        const [messages, setMessages] = useState<ChatMessage[]>([]);
-        const [isLoading, setIsLoading] = useState(false);
-        const username = user?.display_name || user?.email || "";
-        const messagesRef = useRef(messages);
+	const { user, token, loading } = useAuth();
+	const router = useRouter();
+	const [messages, setMessages] = useState<ChatMessage[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const username = user?.display_name || user?.email || "";
+	const messagesRef = useRef(messages);
 
-        useEffect(() => {
-                if (!loading && !token) {
-                        router.push("/login");
-                }
-        }, [loading, token, router]);
+	useEffect(() => {
+		if (!loading && !token) {
+			router.push("/login");
+		}
+	}, [loading, token, router]);
 
 	useEffect(() => {
 		messagesRef.current = messages;
@@ -73,8 +73,8 @@ export default function Home() {
 			return updated;
 		});
 
-                try {
-                        const res = await sendPrompt(prompt, token ?? undefined);
+		try {
+			const res = await sendPrompt(prompt, token ?? undefined);
 
 			if (res.response) {
 				await typeMessage(res.response, assistantIndex);
@@ -86,21 +86,20 @@ export default function Home() {
 		}
 	};
 
-        if (!token) {
-                return <p className="p-4">Chargement...</p>;
-        }
+	if (!token) {
+		return <p className="p-4">Chargement...</p>;
+	}
 
-        return (
-                <>
-                        <Messages
-                                username={username}
-                                messages={messages}
-                        />
-                        <ChatInput
-                                onSend={handleSend}
-                                isLoading={isLoading}
-                        />
-                </>
-        );
+	return (
+		<>
+			<Messages
+				username={username}
+				messages={messages}
+			/>
+			<ChatInput
+				onSend={handleSend}
+				isLoading={isLoading}
+			/>
+		</>
+	);
 }
-
