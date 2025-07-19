@@ -2,7 +2,6 @@ use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 
 mod config;
-mod globals;
 mod handlers;
 mod models;
 mod routes;
@@ -28,6 +27,11 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("failed to connect to database");
 
+    let conversation_service = services::conversation::ConversationService::new(
+        pool.clone(),
+        ollama_service.clone(),
+    );
+
     MIGRATOR.run(&pool).await.expect("failed to run migrations");
 
     println!("✅ API démarrée sur http://{}", server_addr);
@@ -39,6 +43,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .app_data(web::Data::new(ollama_service.clone()))
             .app_data(web::Data::new(auth_service.clone()))
+            .app_data(web::Data::new(conversation_service.clone()))
             .configure(register_routes)
     })
     .bind(&server_addr)?

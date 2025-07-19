@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@web/components/Header";
+import { AuthProvider } from "@web/contexts/AuthContext";
 
 export const metadata: Metadata = {
 	title: "SYA, votre assistant web",
@@ -15,9 +16,10 @@ export default function RootLayout({
 	return (
 		<html lang="fr">
 			<body className={`antialiased`}>
-				<Header />
-
-				<main className="bg-zinc-900 text-gray-200">{children}</main>
+				<AuthProvider>
+					<Header />
+					<main className="bg-zinc-900 text-gray-200">{children}</main>
+				</AuthProvider>
 			</body>
 		</html>
 	);
