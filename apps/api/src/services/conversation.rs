@@ -137,12 +137,11 @@ impl ConversationService {
         }
 
         let existing = sqlx::query_as::<_, MessageRow>(
-            "SELECT sender_role, content FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC",
+            "SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC",
         )
         .bind(&conv_id)
         .fetch_all(&self.pool)
-        .await
-        .unwrap_or_default();
+        .await?;
 
         for m in existing {
             history.push(Message {
