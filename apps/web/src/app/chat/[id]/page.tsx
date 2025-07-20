@@ -5,13 +5,8 @@ import ChatPageClient from "./ChatPage";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-	const auth = await getServerAuth();
-
-  console.log(auth)
-
-	// if (!auth) redirect("/login");
-
-	// const username = auth.user.display_name || auth.user.email;
-
-	return <ChatPageClient username={"Charlie"} />;
+  const auth = await getServerAuth();
+  if (!auth) redirect("/login");
+  const username = auth.user.display_name || auth.user.email;
+  return <ChatPageClient token={auth.token} username={username} />;
 }

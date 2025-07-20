@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import apiClient from "@lib/api-client";
 
 export default function LoginForm() {
 	const router = useRouter();
@@ -25,9 +24,9 @@ export default function LoginForm() {
 			if (!res.ok) throw new Error("Erreur d'authentification");
 
 			router.push("/chat");
-		} catch (err) {
-			setError("Erreur d'authentification");
-		}
+                } catch {
+                        setError("Erreur d'authentification");
+                }
 	};
 
 	return (
@@ -61,11 +60,9 @@ export default function LoginForm() {
 			</form>
 			<p>
 				Pas encore de compte ?{" "}
-				<Link
-					href="/register"
-					className="underline">
-					S'inscrire
-				</Link>
+                                <Link href="/register" className="underline">
+                                        S&apos;inscrire
+                                </Link>
 			</p>
 		</div>
 	);

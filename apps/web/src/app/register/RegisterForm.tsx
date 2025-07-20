@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import apiClient from "@lib/api-client";
 
 export default function RegisterForm() {
 	const router = useRouter();
@@ -24,9 +23,9 @@ export default function RegisterForm() {
 			if (!res.ok) throw new Error("Erreur lors de l'inscription");
 
 			router.push("/chat");
-		} catch (err) {
-			setError("Erreur lors de l'inscription");
-		}
+                } catch {
+                        setError("Erreur lors de l'inscription");
+                }
 	};
 
 	return (
@@ -62,7 +61,7 @@ export default function RegisterForm() {
 				<button
 					type="submit"
 					className="p-2 bg-blue-600 text-white rounded">
-					{"S'inscrire"}
+                                        S&apos;inscrire
 				</button>
 			</form>
 			<p>

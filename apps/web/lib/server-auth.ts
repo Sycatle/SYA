@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import apiClient, { type AuthResponse } from './api-client';
+import { ApiClient, type AuthResponse } from './api-client';
 
 export async function getServerAuth(): Promise<AuthResponse | null> {
   const cookieStore = await cookies();
@@ -8,9 +8,9 @@ export async function getServerAuth(): Promise<AuthResponse | null> {
   if (!token) return null;
 
   try {
-    apiClient.setToken(token); // 💡 Injecte le token dans ton client centralisé
-    const res = await apiClient.fetchMe(); // utilise Authorization
-    cookieStore.set('authToken', res.token, { path: '/' });
+    const client = new ApiClient();
+    client.setToken(token);
+    const res = await client.fetchMe();
     return res;
   } catch {
     return null;

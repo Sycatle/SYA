@@ -13,7 +13,7 @@ interface ChatMessage {
   classes?: string[];
 }
 
-export default function ChatPageClient({ username }: { username: string }) {
+export default function ChatPageClient({ username, token }: { username: string, token: string }) {
   const params = useParams();
   const conversationId = Array.isArray(params.id) ? params.id[0] : (params.id as string);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -92,7 +92,7 @@ export default function ChatPageClient({ username }: { username: string }) {
   };
 
   return (
-    <ChatLayout currentId={conversationId}>
+    <ChatLayout token={token} currentId={conversationId}>
       <Messages username={username} messages={messages} />
       <ChatInput onSend={handleSend} isLoading={isLoading} offsetLeftClass="left-64" />
     </ChatLayout>
