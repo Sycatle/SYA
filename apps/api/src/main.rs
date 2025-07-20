@@ -3,13 +3,12 @@ use actix_web::{web, App, HttpServer};
 
 mod auth_extractor;
 mod config;
-mod handlers;
+mod controllers;
 mod models;
-mod routes;
 mod services;
 
 use config::Config;
-use routes::register_routes;
+use controllers::register;
 use services::{auth::AuthService, ollama::OllamaService, user::UserService};
 use sqlx::postgres::PgPoolOptions;
 
@@ -45,7 +44,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(auth_service.clone()))
             .app_data(web::Data::new(user_service.clone()))
             .app_data(web::Data::new(conversation_service.clone()))
-            .configure(register_routes)
+            .configure(register)
     })
     .bind(&server_addr)?
     .run()

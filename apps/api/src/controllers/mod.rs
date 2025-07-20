@@ -1,9 +1,12 @@
-use crate::handlers::{health, ollama};
-use actix_web::web;
-pub mod auth;
+pub mod health;
+pub mod ollama;
 pub mod conversations;
+pub mod auth;
 
-pub fn register_routes(cfg: &mut web::ServiceConfig) {
+use actix_web::web;
+
+/// Register all API routes and associate them with controllers.
+pub fn register(cfg: &mut web::ServiceConfig) {
     cfg.service(web::resource("/api/health").route(web::get().to(health::ping)));
     cfg.service(web::resource("/api/ollama").route(web::get().to(ollama::ping)));
     cfg.service(web::resource("/api/register").route(web::post().to(auth::register)));
