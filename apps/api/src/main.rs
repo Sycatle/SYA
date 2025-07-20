@@ -10,7 +10,7 @@ mod services;
 
 use config::Config;
 use routes::register_routes;
-use services::{auth::AuthService, ollama::OllamaService};
+use services::{auth::AuthService, ollama::OllamaService, user::UserService};
 use sqlx::postgres::PgPoolOptions;
 
 static MIGRATOR: sqlx::migrate::Migrator = sqlx::migrate!("./migrations");
@@ -28,6 +28,8 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("failed to connect to database");
 
+    let user_service = UserService::new(pool.clone());
+
     let conversation_service =
         services::conversation::ConversationService::new(pool.clone(), ollama_service.clone());
 
@@ -39,9 +41,9 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Cors::permissive())
             .app_data(web::Data::new(config.clone()))
-            .app_data(web::Data::new(pool.clone()))
             .app_data(web::Data::new(ollama_service.clone()))
             .app_data(web::Data::new(auth_service.clone()))
+            .app_data(web::Data::new(user_service.clone()))
             .app_data(web::Data::new(conversation_service.clone()))
             .configure(register_routes)
     })

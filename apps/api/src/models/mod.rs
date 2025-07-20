@@ -6,4 +6,4 @@ pub mod user;
 
 pub use conversation::{Conversation, ConversationDetail, CreateConversation, DEFAULT_MODEL};
 pub use message::{Message, MessageRow, NewMessage};
-pub use user::{AuthResponse, LoginRequest, RegisterRequest, User, UserPublic};
+pub use user::{AuthResponse, LoginRequest, RegisterRequest, User};
