@@ -1,39 +1,29 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-// Update the import path below if your api file is in a different location
 import { apiClient, type Conversation } from "@lib/api-client";
-import { useAuth } from "@contexts/AuthContext";
 import clsx from "clsx";
 
 interface ChatLayoutProps {
   children: React.ReactNode;
   currentId?: string;
+  token: string;
 }
 
-export default function ChatLayout({ children, currentId }: ChatLayoutProps) {
-  const { token, loading } = useAuth();
+export default function ChatLayout({ children, currentId, token }: ChatLayoutProps) {
   const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>([]);
 
   useEffect(() => {
-    if (!loading && !token) {
-      router.push("/login");
-    }
-  }, [loading, token, router]);
-
-  useEffect(() => {
-    if (token) {
-      apiClient
-        .listConversations()
-        .then(setConversations)
-        .catch((err) => console.error(err));
-    }
+    apiClient.setToken(token); // injection manuelle du token
+    apiClient
+      .listConversations()
+      .then(setConversations)
+      .catch((err) => console.error(err));
   }, [token]);
 
   const handleNew = async () => {
-    if (!token) return;
     try {
       const conv = await apiClient.createConversation({});
       router.push(`/chat/${conv.id}`);
@@ -41,8 +31,6 @@ export default function ChatLayout({ children, currentId }: ChatLayoutProps) {
       console.error(err);
     }
   };
-
-  if (!token) return <p className="p-4">Chargement...</p>;
 
   return (
     <div className="flex pt-16">
