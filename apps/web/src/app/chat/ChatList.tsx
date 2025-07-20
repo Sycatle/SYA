@@ -41,18 +41,18 @@ export default function ChatList({ token }: { token: string }) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-28 px-4">
+    <div className="max-w-6xl mx-auto py-28 px-2">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Conversations</h1>
         <button className="p-2 bg-blue-600 text-white rounded" onClick={handleNew}>
           Nouvelle conversation
         </button>
       </div>
-      <ul className="space-y-2">
+      <ul className="gap-2">
         {conversations.map((c) => (
-          <li key={c.id} className="p-3 bg-zinc-800 rounded">
+          <li key={c.id} className="p-2 bg-zinc-800 rounded">
             <Link href={`/chat/${c.id}`} className="hover:underline">
-              {c.title}
+              {c.title.length > 40 ? c.title.slice(0, 40) + "…" : c.title}
             </Link>
           </li>
         ))}

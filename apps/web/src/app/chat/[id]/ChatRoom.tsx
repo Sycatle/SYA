@@ -1,9 +1,8 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "next/navigation";
 import ChatInput from "@components/ChatInput";
 import Messages from "@components/Messages";
-import ChatLayout from "@components/ChatLayout";
 import { apiClient, type MessageRow } from "@lib/api-client";
 
 interface ChatMessage {
@@ -13,31 +12,28 @@ interface ChatMessage {
   classes?: string[];
 }
 
-export default function ChatPageClient({ username, token }: { username: string, token: string }) {
-  const params = useParams();
-  const conversationId = Array.isArray(params.id) ? params.id[0] : (params.id as string);
+export default function ChatRoom({ username, token, conversationId }: { username: string; token: string; conversationId: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesRef = useRef(messages);
 
   useEffect(() => {
-    if (conversationId) {
-      apiClient
-        .getConversation(conversationId)
-        .then((conv) => {
-          const history = conv.messages.map((m: MessageRow) => ({
-            isQuestion: m.sender_role === "user",
-            content: m.content,
-          }));
-          setMessages(history);
-        })
-        .catch((err) => console.error(err));
-    }
-  }, [conversationId]);
-
-  useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  useEffect(() => {
+    apiClient.setToken(token);
+    apiClient
+      .getConversation(conversationId)
+      .then((conv) => {
+        const history = conv.messages.map((m: MessageRow) => ({
+          isQuestion: m.sender_role === "user",
+          content: m.content,
+        }));
+        setMessages(history);
+      })
+      .catch((err) => console.error(err));
+  }, [conversationId, token]);
 
   const typeMessage = async (text: string, index: number) => {
     for (let i = 0; i < text.length; i++) {
@@ -92,9 +88,9 @@ export default function ChatPageClient({ username, token }: { username: string, 
   };
 
   return (
-    <ChatLayout token={token} currentId={conversationId}>
+    <>
       <Messages username={username} messages={messages} />
-      <ChatInput onSend={handleSend} isLoading={isLoading} offsetLeftClass="left-64" />
-    </ChatLayout>
+      <ChatInput onSend={handleSend} isLoading={isLoading} offsetLeftClass="left-(--sidebar-width)" />
+    </>
   );
 }

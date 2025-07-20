@@ -17,7 +17,7 @@ interface MessagesProps {
 
 export default function Messages({ messages, username }: MessagesProps) {
 	return (
-		<div className="flex flex-col gap-10 max-w-6xl mx-auto py-28 px-4 min-h-screen">
+		<div className="bg-background flex flex-col gap-10 max-w-6xl mx-auto pt-16 pb-24 px-4">
 			{messages.map((message, index) => {
 				const timestamp = new Date().toLocaleTimeString("fr-FR", {
 					hour: "2-digit",
