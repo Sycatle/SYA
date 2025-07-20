@@ -16,11 +16,26 @@ export default function ChatLayout({ children, currentId, token }: ChatLayoutPro
   const [conversations, setConversations] = useState<Conversation[]>([]);
 
   useEffect(() => {
-    apiClient.setToken(token); // injection manuelle du token
-    apiClient
-      .listConversations()
-      .then(setConversations)
-      .catch((err) => console.error(err));
+    apiClient.setToken(token);
+
+    const fetchData = () => {
+      apiClient
+        .listConversations()
+        .then((convs) =>
+          setConversations(
+            convs.sort(
+              (a, b) =>
+                new Date(b.updated_at).getTime() -
+                new Date(a.updated_at).getTime()
+            )
+          )
+        )
+        .catch((err) => console.error(err));
+    };
+
+    fetchData();
+    const id = setInterval(fetchData, 15000);
+    return () => clearInterval(id);
   }, [token]);
 
   const handleNew = async () => {
