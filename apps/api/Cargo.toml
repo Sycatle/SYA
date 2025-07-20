@@ -20,6 +20,8 @@ argon2 = "0.5"
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["serde", "v4"] }
 rand_core = "0.6"
+tracing = "0.1"
+anyhow = "1"
 
 [[bin]]
 name = "api"
