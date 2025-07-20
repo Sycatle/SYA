@@ -3,17 +3,17 @@
 import { useState } from "react";
 
 interface ChatInputProps {
-        onSend: (message: string) => void;
-        isDisabled?: boolean;
-        isLoading?: boolean;
-        offsetLeftClass?: string;
+	onSend: (message: string) => void;
+	isDisabled?: boolean;
+	isLoading?: boolean;
+	offsetLeftClass?: string;
 }
 
 export default function ChatInput({
-        onSend,
-        isDisabled = false,
-        isLoading = false,
-        offsetLeftClass = "left-0",
+	onSend,
+	isDisabled = false,
+	isLoading = false,
+	offsetLeftClass = "left-0",
 }: ChatInputProps) {
 	const [message, setMessage] = useState("");
 
@@ -28,10 +28,9 @@ export default function ChatInput({
 	};
 
 	return (
-                <form
-                        onSubmit={handleSubmit}
-                        className={`fixed bottom-0 right-0 flex items-center gap-2 z-50 backdrop-blur-lg bg-zinc-50/75 dark:bg-zinc-900/75 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}
-                >
+		<form
+			onSubmit={handleSubmit}
+			className={`fixed bottom-0 right-0 flex items-center gap-2 z-50 backdrop-blur-lg bg-zinc-50/75 dark:bg-zinc-900/75 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}>
 			<div className="flex w-full items-center justify-between max-w-6xl mx-auto p-4">
 				<input
 					type="text"
