@@ -1,11 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 
-mod auth_extractor;
-mod config;
-mod controllers;
-mod models;
-mod services;
+use api::{config, controllers, services};
 
 use config::Config;
 use controllers::register;
