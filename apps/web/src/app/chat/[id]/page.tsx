@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import ChatInput from "@web/components/ChatInput";
 import Messages from "@web/components/Messages";
 import ChatLayout from "@web/components/ChatLayout";
-import { addMessage, getConversation, MessageRow } from "../../../../lib/api";
+import { apiClient, type MessageRow } from "../../../../lib/api-client";
 import { useAuth } from "@web/contexts/AuthContext";
 
 interface ChatMessage {
@@ -33,10 +33,11 @@ export default function Home() {
 		}
 	}, [loading, token, router]);
 
-	useEffect(() => {
-		if (token && conversationId) {
-			getConversation(conversationId, token)
-				.then((conv) => {
+        useEffect(() => {
+                if (token && conversationId) {
+                        apiClient
+                                .getConversation(conversationId)
+                                .then((conv) => {
 					const history = conv.messages.map((m: MessageRow) => ({
 						isQuestion: m.sender_role === "user",
 						content: m.content,
@@ -93,8 +94,8 @@ export default function Home() {
 		});
 
 		try {
-			if (!token) return;
-			const res = await addMessage(conversationId, prompt, token, "user");
+                        if (!token) return;
+                        const res = await apiClient.addMessage(conversationId, prompt, "user");
 
 			if (res.content) {
 				await typeMessage(res.content, assistantIndex);

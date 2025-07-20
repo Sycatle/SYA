@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 // Update the import path below if your api file is in a different location
-import { listConversations, createConversation, Conversation } from "../../lib/api";
+import { apiClient, type Conversation } from "../../lib/api-client";
 import { useAuth } from "@web/contexts/AuthContext";
 import clsx from "clsx";
 
@@ -25,7 +25,8 @@ export default function ChatLayout({ children, currentId }: ChatLayoutProps) {
 
   useEffect(() => {
     if (token) {
-      listConversations(token)
+      apiClient
+        .listConversations()
         .then(setConversations)
         .catch((err) => console.error(err));
     }
@@ -34,7 +35,7 @@ export default function ChatLayout({ children, currentId }: ChatLayoutProps) {
   const handleNew = async () => {
     if (!token) return;
     try {
-      const conv = await createConversation(token, {});
+      const conv = await apiClient.createConversation({});
       router.push(`/chat/${conv.id}`);
     } catch (err) {
       console.error(err);

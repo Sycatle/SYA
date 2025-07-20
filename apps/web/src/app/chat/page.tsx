@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@web/contexts/AuthContext";
-import { listConversations, createConversation, Conversation } from "../../../lib/api";
+import { apiClient, type Conversation } from "../../../lib/api-client";
 
 export default function ChatListPage() {
   const { token, loading } = useAuth();
@@ -18,7 +18,8 @@ export default function ChatListPage() {
 
   useEffect(() => {
     if (token) {
-      listConversations(token)
+      apiClient
+        .listConversations()
         .then(setConversations)
         .catch((err) => console.error(err));
     }
@@ -27,7 +28,7 @@ export default function ChatListPage() {
   const handleNew = async () => {
     if (!token) return;
     try {
-      const conv = await createConversation(token, {});
+      const conv = await apiClient.createConversation({});
       router.push(`/chat/${conv.id}`);
     } catch (err) {
       console.error(err);
