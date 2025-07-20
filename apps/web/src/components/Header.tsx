@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@web/contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 
 export default function Header() {
 	const { user, token, logout } = useAuth();

@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import apiClient from "../../lib/api-client";
+import apiClient from "@lib/api-client";
 
 interface User {
 	id: string;

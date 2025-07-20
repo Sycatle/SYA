@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 // Update the import path below if your api file is in a different location
-import { apiClient, type Conversation } from "../../lib/api-client";
-import { useAuth } from "@web/contexts/AuthContext";
+import { apiClient, type Conversation } from "@lib/api-client";
+import { useAuth } from "@contexts/AuthContext";
 import clsx from "clsx";
 
 interface ChatLayoutProps {

@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@web/contexts/AuthContext";
-import { apiClient, type Conversation } from "../../../lib/api-client";
+import { useAuth } from "@contexts/AuthContext";
+import { apiClient, type Conversation } from "@lib/api-client";
 
 export default function ChatListPage() {
   const { token, loading } = useAuth();

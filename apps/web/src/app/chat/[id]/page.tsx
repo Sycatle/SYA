@@ -2,11 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import ChatInput from "@web/components/ChatInput";
-import Messages from "@web/components/Messages";
-import ChatLayout from "@web/components/ChatLayout";
-import { apiClient, type MessageRow } from "../../../../lib/api-client";
-import { useAuth } from "@web/contexts/AuthContext";
+import ChatInput from "@components/ChatInput";
+import Messages from "@components/Messages";
+import ChatLayout from "@components/ChatLayout";
+import { apiClient, type MessageRow } from "@lib/api-client";
+import { useAuth } from "@contexts/AuthContext";
 
 interface ChatMessage {
 	isQuestion: boolean;
