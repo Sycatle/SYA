@@ -34,7 +34,7 @@ export default function ChatInput({
 
 			if (isDisabled || isLoading) return;
 
-			handleSubmit(e as any);
+                        handleSubmit(e as unknown as React.FormEvent);
 		}
 	};
 

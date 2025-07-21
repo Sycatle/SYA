@@ -44,7 +44,7 @@ export default function ChatRoom({ username, token, conversationId }: { username
 
   const typeMessage = async (text: string, index: number) => {
     for (let i = 0; i < text.length; i++) {
-      await new Promise((r) => setTimeout(r, 15));
+      await new Promise((r) => setTimeout(r, 5));
       setMessages((prev) => {
         const newPrev = [...prev];
         if (newPrev[index]) {

@@ -23,7 +23,7 @@ export default function Messages({
 	bottomRef,
 }: MessagesProps) {
 	return (
-		<div className="bg-background flex flex-col gap-10 max-w-6xl w-full mx-auto pt-16 pb-32 px-4">
+		<div className="bg-background flex flex-col gap-10 max-w-6xl w-full mx-auto py-24 px-4">
 			{messages.map((message, index) => {
 				const timestamp = new Date().toLocaleTimeString("fr-FR", {
 					hour: "2-digit",
