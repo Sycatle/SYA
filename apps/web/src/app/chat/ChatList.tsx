@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiClient, type Conversation } from "@lib/api-client";
+import { Trash2 } from "lucide-react";
 
 export default function ChatList({ token }: { token: string }) {
   const router = useRouter();
@@ -40,6 +41,15 @@ export default function ChatList({ token }: { token: string }) {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await apiClient.deleteConversation(id);
+      setConversations((prev) => prev.filter((c) => c.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-28 px-2">
       <div className="flex items-center justify-between mb-4">
@@ -50,10 +60,17 @@ export default function ChatList({ token }: { token: string }) {
       </div>
       <ul className="gap-2">
         {conversations.map((c) => (
-          <li key={c.id} className="p-2 bg-zinc-800 rounded">
-            <Link href={`/chat/${c.id}`} className="hover:underline">
+          <li key={c.id} className="p-2 bg-zinc-800 rounded flex items-center justify-between">
+            <Link href={`/chat/${c.id}`} className="hover:underline flex-1">
               {c.title.length > 40 ? c.title.slice(0, 40) + "…" : c.title}
             </Link>
+            <button
+              className="ml-2 text-red-500 hover:text-red-700"
+              onClick={() => handleDelete(c.id)}
+            >
+              <Trash2 className="w-4 h-4" />
+              <span className="sr-only">Supprimer</span>
+            </button>
           </li>
         ))}
         {conversations.length === 0 && (

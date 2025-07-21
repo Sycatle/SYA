@@ -58,14 +58,14 @@ export default function Messages({
 
 							<div
 								className={clsx(
-									"group relative text-lg rounded-xl",
+									"group relative text-lg rounded-xl break-words ",
 									isUser
 										? "p-3 bg-zinc-100 dark:bg-zinc-800 dark:text-white"
 										: "px-3 dark:text-white",
 									message.classes,
 								)}>
 								{isUser ? (
-									<span>{message.content}</span>
+									<span className="break-words">{message.content}</span>
 								) : (
 									<MarkdownToTailwind>{message.content}</MarkdownToTailwind>
 								)}

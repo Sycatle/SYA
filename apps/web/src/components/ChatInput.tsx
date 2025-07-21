@@ -41,7 +41,7 @@ export default function ChatInput({
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className={`fixed bottom-0 right-0 flex items-center gap-2 z-50 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}>
+			className={`fixed bottom-0 right-0 flex items-center gap-2 z-50  px-4 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}>
 			<div className="flex w-full items-center justify-between max-w-6xl mx-auto pb-4">
 				<Textarea
 					value={message}

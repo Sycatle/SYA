@@ -11,9 +11,11 @@ import {
 	SidebarMenu,
 	SidebarMenuItem,
 	SidebarMenuButton,
+	SidebarMenuAction,
 	SidebarGroup,
 	SidebarGroupLabel,
 } from "@web/components/ui/sidebar";
+import { Trash2 } from "lucide-react";
 import { NavUser } from "@web/components/nav-user";
 import Logo from "@components/Logo";
 
@@ -60,6 +62,18 @@ export default function ChatSidebar({
 		}
 	};
 
+	const handleDelete = async (id: string) => {
+		try {
+			await apiClient.deleteConversation(id);
+			setConversations((prev) => prev.filter((c) => c.id !== id));
+			if (currentId === id) {
+				window.location.assign("/chat");
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<Sidebar variant="inset">
 			<SidebarHeader>
@@ -79,7 +93,7 @@ export default function ChatSidebar({
 							size="lg"
 							onClick={handleNew}
 							tooltip="Nouvelle conversation">
-							Nouvelle conversion
+							Nouvelle conversation
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
@@ -97,6 +111,10 @@ export default function ChatSidebar({
 										{c.title.length > 40 ? c.title.slice(0, 40) + "…" : c.title}
 									</Link>
 								</SidebarMenuButton>
+								<SidebarMenuAction showOnHover={true} onClick={() => handleDelete(c.id)}>
+									<Trash2 className="text-muted-foreground" />
+									<span className="sr-only">Supprimer</span>
+								</SidebarMenuAction>
 							</SidebarMenuItem>
 						))}
 						{conversations.length === 0 && (
