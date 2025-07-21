@@ -4,10 +4,10 @@ use crate::models::{
     Conversation, ConversationDetail, CreateConversation, Message, MessageRow, NewMessage,
 };
 use crate::services::ollama::OllamaService;
+use anyhow::{anyhow, Context, Result};
 use sqlx::PgPool;
+use tracing::{error, info};
 use uuid::Uuid;
-use tracing::{info, error};
-use anyhow::{Result, Context, anyhow};
 
 const TITLE_PROMPT: &str = "Génère un titre court (5 ou 6 mots max) pour résumer cette conversation. Ne mets pas de guillemets, pas de point, rien autour. Juste le titre brut.";
 
@@ -32,22 +32,33 @@ impl ConversationService {
             .clone()
             .unwrap_or_else(|| crate::models::DEFAULT_MODEL.to_string());
 
-        sqlx::query_as::<_, Conversation>(
+        let system_prompt = payload
+            .system_prompt
+            .clone()
+            .unwrap_or_else(|| crate::models::DEFAULT_SYSTEM_PROMPT.to_string());
+
+        let conv = sqlx::query_as::<_, Conversation>(
             "INSERT INTO conversations (user_id, title, system_prompt, model) VALUES ($1, COALESCE($2, 'Nouvelle conversation'), COALESCE($3, ''), $4) RETURNING *",
         )
         .bind(user_id)
         .bind(&payload.title)
-        .bind(&payload.system_prompt)
+        .bind(&system_prompt)
         .bind(&model)
         .fetch_one(&self.pool)
         .await
-        .context("Erreur lors de la création de la conversation")
+        .context("Erreur lors de la création de la conversation")?;
+
+        sqlx::query("INSERT INTO messages (conversation_id, sender_role, content) VALUES ($1, 'system', $2)")
+            .bind(conv.id)
+            .bind(&system_prompt)
+            .execute(&self.pool)
+            .await
+            .context("Erreur lors de l'enregistrement du system prompt")?;
+
+        Ok(conv)
     }
 
-    pub async fn list_conversations(
-        &self,
-        user_id: Uuid,
-    ) -> Result<Vec<Conversation>> {
+    pub async fn list_conversations(&self, user_id: Uuid) -> Result<Vec<Conversation>> {
         sqlx::query_as::<_, Conversation>(
             "SELECT * FROM conversations WHERE user_id = $1 ORDER BY updated_at DESC",
         )
@@ -72,18 +83,20 @@ impl ConversationService {
         .context("Erreur lors de la récupération de la conversation")?;
 
         if let Some(conv) = conversation {
-            let messages = self.fetch_conversation_messages(conv.id).await.unwrap_or_default();
-            Ok(Some(ConversationDetail { conversation: conv, messages }))
+            let messages = self
+                .fetch_conversation_messages(conv.id)
+                .await
+                .unwrap_or_default();
+            Ok(Some(ConversationDetail {
+                conversation: conv,
+                messages,
+            }))
         } else {
             Ok(None)
         }
     }
 
-    pub async fn delete_conversation(
-        &self,
-        user_id: Uuid,
-        conv_id: Uuid,
-    ) -> Result<bool> {
+    pub async fn delete_conversation(&self, user_id: Uuid, conv_id: Uuid) -> Result<bool> {
         let result = sqlx::query("DELETE FROM conversations WHERE id = $1 AND user_id = $2")
             .bind(conv_id)
             .bind(user_id)
@@ -101,7 +114,8 @@ impl ConversationService {
         new_msg: &NewMessage,
     ) -> Result<MessageRow> {
         // 1. Vérifier l'existence de la conversation
-        let conv = self.fetch_conversation_owned_by_user(user_id, conv_id)
+        let conv = self
+            .fetch_conversation_owned_by_user(user_id, conv_id)
             .await
             .context("Conversation non trouvée ou accès refusé")?;
 
@@ -111,12 +125,14 @@ impl ConversationService {
             .context("Erreur lors de l'enregistrement du message utilisateur")?;
 
         // 3. Reconstituer l'historique pour le LLM
-        let history = self.build_conversation_history(&conv)
+        let history = self
+            .build_conversation_history(&conv)
             .await
             .context("Erreur lors de la construction de l'historique de conversation")?;
 
         // 4. Générer et stocker la réponse AI
-        let assistant = self.generate_and_store_ai_reply(&conv, &history)
+        let assistant = self
+            .generate_and_store_ai_reply(&conv, &history)
             .await
             .context("Erreur lors de la génération ou l'enregistrement de la réponse AI")?;
 
@@ -136,7 +152,9 @@ impl ConversationService {
                 conv_id_clone,
                 &model_clone,
                 &history_clone,
-            ).await {
+            )
+            .await
+            {
                 error!("Erreur lors de la génération du titre : {}", e);
             }
         });
@@ -180,11 +198,7 @@ impl ConversationService {
         Ok(conv)
     }
 
-    async fn store_user_message(
-        &self,
-        conv_id: Uuid,
-        new_msg: &NewMessage,
-    ) -> Result<()> {
+    async fn store_user_message(&self, conv_id: Uuid, new_msg: &NewMessage) -> Result<()> {
         sqlx::query(
             "INSERT INTO messages (conversation_id, sender_role, content) VALUES ($1, $2, $3)",
         )
@@ -197,10 +211,8 @@ impl ConversationService {
         Ok(())
     }
 
-    async fn build_conversation_history(
-        &self,
-        conv: &Conversation,
-    ) -> Result<Vec<Message>> {
+    async fn build_conversation_history(&self, conv: &Conversation) -> Result<Vec<Message>> {
+<<<<<<< ours
         let mut history = Vec::new();
         if !conv.system_prompt.is_empty() {
             history.push(Message {
@@ -208,22 +220,35 @@ impl ConversationService {
                 content: conv.system_prompt.clone(),
             });
         }
-        let existing = self.fetch_conversation_messages(conv.id)
+=======
+>>>>>>> theirs
+        let existing = self
+            .fetch_conversation_messages(conv.id)
             .await
             .context("Erreur lors de la récupération des messages de la conversation")?;
-        for m in existing {
-            history.push(Message {
+
+        let mut history: Vec<Message> = existing
+            .into_iter()
+            .map(|m| Message {
                 role: m.sender_role,
                 content: m.content,
-            });
+            })
+            .collect();
+
+        if !history.iter().any(|m| m.role == "system") && !conv.system_prompt.is_empty() {
+            history.insert(
+                0,
+                Message {
+                    role: "system".to_string(),
+                    content: conv.system_prompt.clone(),
+                },
+            );
         }
+
         Ok(history)
     }
 
-    async fn fetch_conversation_messages(
-        &self,
-        conv_id: Uuid,
-    ) -> Result<Vec<MessageRow>> {
+    async fn fetch_conversation_messages(&self, conv_id: Uuid) -> Result<Vec<MessageRow>> {
         sqlx::query_as::<_, MessageRow>(
             "SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC",
         )
@@ -238,9 +263,9 @@ impl ConversationService {
         conv: &Conversation,
         history: &[Message],
     ) -> Result<MessageRow> {
-        let ai_result = self.ollama.chat(&conv.model, history)
-            .await
-            .map_err(|e| anyhow!("Erreur lors de l'appel à Ollama pour la génération de la réponse AI: {e}"))?;
+        let ai_result = self.ollama.chat(&conv.model, history).await.map_err(|e| {
+            anyhow!("Erreur lors de l'appel à Ollama pour la génération de la réponse AI: {e}")
+        })?;
         let assistant_content = ai_result
             .get("message")
             .and_then(|m| m.get("content"))
@@ -311,7 +336,9 @@ async fn update_title_if_needed_safe(
         });
 
         // On capture toute erreur en String ici
-        let json = ollama.chat(model, &title_history).await
+        let json = ollama
+            .chat(model, &title_history)
+            .await
             .map_err(|e| format!("Erreur Ollama: {e}"))?;
 
         let summary = json
