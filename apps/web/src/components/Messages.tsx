@@ -42,7 +42,9 @@ export default function Messages({
 						<div
 							className={clsx(
 								"flex items-start lg:max-w-[85%] space-x-3",
-								isUser && "flex-row-reverse space-x-reverse",
+								isUser 
+								? "flex-row-reverse space-x-reverse"
+								: "w-full",
 							)}>
 							<Image
 								src={
@@ -61,7 +63,7 @@ export default function Messages({
 									"group relative text-lg rounded-xl break-words ",
 									isUser
 										? "p-3 bg-zinc-100 dark:bg-zinc-800 dark:text-white"
-										: "px-3 dark:text-white",
+										: "px-3 dark:text-white w-full",
 									message.classes,
 								)}>
 								{isUser ? (
