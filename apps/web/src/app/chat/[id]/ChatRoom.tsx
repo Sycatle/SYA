@@ -16,9 +16,14 @@ export default function ChatRoom({ username, token, conversationId }: { username
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesRef = useRef(messages);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
@@ -26,10 +31,12 @@ export default function ChatRoom({ username, token, conversationId }: { username
     apiClient
       .getConversation(conversationId)
       .then((conv) => {
-        const history = conv.messages.map((m: MessageRow) => ({
-          isQuestion: m.sender_role === "user",
-          content: m.content,
-        }));
+        const history = conv.messages
+          .filter((m: MessageRow) => m.sender_role !== "system")
+          .map((m: MessageRow) => ({
+            isQuestion: m.sender_role === "user",
+            content: m.content,
+          }));
         setMessages(history);
       })
       .catch((err) => console.error(err));
@@ -89,7 +96,7 @@ export default function ChatRoom({ username, token, conversationId }: { username
 
   return (
     <>
-      <Messages username={username} messages={messages} />
+      <Messages username={username} messages={messages} bottomRef={bottomRef} />
       <ChatInput onSend={handleSend} isLoading={isLoading} offsetLeftClass="left-(--sidebar-width)" />
     </>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Textarea } from "@components/ui/textarea";
 
 interface ChatInputProps {
 	onSend: (message: string) => void;
@@ -32,13 +33,12 @@ export default function ChatInput({
 			onSubmit={handleSubmit}
 			className={`fixed bottom-0 right-0 flex items-center gap-2 z-50 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}>
 			<div className="flex w-full items-center justify-between max-w-6xl mx-auto pb-4">
-				<input
-					type="text"
+				<Textarea
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
 					placeholder="Écrivez votre message ici..."
 					aria-label="Zone de message"
-					className="flex-1 px-4 py-2 shadow rounded-full bg-zinc-50 dark:bg-zinc-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none border transition"
+					className="flex-1 p-4 shadow rounded-lg bg-zinc-50 dark:bg-zinc-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none border transition"
 					disabled={isDisabled || isLoading}
 				/>
 

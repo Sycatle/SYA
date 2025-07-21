@@ -13,11 +13,12 @@ interface Message {
 interface MessagesProps {
 	messages: Message[];
 	username: string;
+	bottomRef?: React.Ref<HTMLDivElement>;
 }
 
-export default function Messages({ messages, username }: MessagesProps) {
+export default function Messages({ messages, username, bottomRef }: MessagesProps) {
 	return (
-		<div className="bg-background flex flex-col gap-10 max-w-6xl mx-auto pt-16 pb-24 px-4">
+		<div className="bg-background flex flex-col gap-10 max-w-6xl w-full mx-auto pt-16 pb-32 px-4">
 			{messages.map((message, index) => {
 				const timestamp = new Date().toLocaleTimeString("fr-FR", {
 					hour: "2-digit",
@@ -67,6 +68,7 @@ export default function Messages({ messages, username }: MessagesProps) {
 					</div>
 				);
 			})}
+			<div ref={bottomRef} />
 		</div>
 	);
 }
