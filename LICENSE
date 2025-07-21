@@ -1,0 +1,39 @@
+Business Source License 1.1 (BSL 1.1)
+
+## Parameters
+
+Licensor: SYA Authors
+Licensed Work: SYA (Simplify Your Assistant)
+Additional Use Grant: Usage strictly non-commercial. Any integration in a commercial product, service, or for-profit environment is strictly forbidden without explicit, prior written agreement from the Licensor. Open-source forks and personal/private usage are permitted.
+Change Date: 2028-01-01
+Change License: Apache License, Version 2.0
+
+## Terms
+
+1. **Grant of Rights:**
+
+   * Until the Change Date, you may use, copy, modify, and create derivative works of the Licensed Work, solely for the purposes permitted by the Additional Use Grant above.
+   * Any form of commercial use, including but not limited to integration, distribution, resale, hosting as a service, or inclusion in paid offerings, is prohibited without the express written consent of the Licensor.
+   * Open-source contributions, forks, and non-commercial research or personal projects are allowed and encouraged.
+
+2. **Distribution:**
+
+   * Distribution of the Licensed Work or any derivative works (including as part of a public or private repository, application, or service) is only permitted for non-commercial purposes, and must retain this license and all copyright, license, and attribution notices.
+   * Commercial distribution, including offering as a SaaS, requires a separate commercial license agreement with the Licensor.
+
+3. **Change Date:**
+
+   * On or after the Change Date (2028-01-01), this Licensed Work will be made available under the Change License (Apache 2.0), and all terms of that license will apply from that date forward.
+
+4. **Disclaimer:**
+
+   * This Licensed Work is provided "AS IS" and without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, or non-infringement.
+   * In no event shall the Licensor be liable for any claim, damages, or other liability arising from or in connection with the Licensed Work.
+
+5. **Contact:**
+
+   * For commercial licensing, exceptions, or inquiries, please contact the SYA Authors via the project repository.
+
+---
+
+*This project is covered by the Business Source License 1.1, designed to encourage open-source contributions and personal usage while protecting against unauthorized commercial exploitation. See the "Change Date" for when the project will transition to an open license (Apache 2.0).*
