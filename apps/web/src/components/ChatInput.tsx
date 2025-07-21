@@ -28,6 +28,16 @@ export default function ChatInput({
 		setMessage("");
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
+
+			if (isDisabled || isLoading) return;
+
+			handleSubmit(e as any);
+		}
+	};
+
 	return (
 		<form
 			onSubmit={handleSubmit}
@@ -39,7 +49,8 @@ export default function ChatInput({
 					placeholder="Écrivez votre message ici..."
 					aria-label="Zone de message"
 					className="flex-1 p-4 shadow rounded-lg bg-zinc-50 dark:bg-zinc-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none border transition"
-					disabled={isDisabled || isLoading}
+					onKeyDown={handleKeyDown}
+					disabled={isDisabled}
 				/>
 
 				<button

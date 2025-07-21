@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import clsx from "clsx";
+import MarkdownToTailwind from "./lib/markdown-to-tailwind";
 
 interface Message {
 	isQuestion: boolean;
@@ -16,7 +17,11 @@ interface MessagesProps {
 	bottomRef?: React.Ref<HTMLDivElement>;
 }
 
-export default function Messages({ messages, username, bottomRef }: MessagesProps) {
+export default function Messages({
+	messages,
+	username,
+	bottomRef,
+}: MessagesProps) {
 	return (
 		<div className="bg-background flex flex-col gap-10 max-w-6xl w-full mx-auto pt-16 pb-32 px-4">
 			{messages.map((message, index) => {
@@ -53,13 +58,18 @@ export default function Messages({ messages, username, bottomRef }: MessagesProp
 
 							<div
 								className={clsx(
-									"group relative text-lg rounded-xl whitespace-pre-wrap ",
+									"group relative text-lg rounded-xl",
 									isUser
 										? "p-3 bg-zinc-100 dark:bg-zinc-800 dark:text-white"
 										: "px-3 dark:text-white",
 									message.classes,
 								)}>
-								{message.content}
+								{isUser ? (
+									<span>{message.content}</span>
+								) : (
+									<MarkdownToTailwind>{message.content}</MarkdownToTailwind>
+								)}
+
 								<span className="hidden lg:group-hover:inline absolute -bottom-5 right-1 text-xs text-gray-400">
 									{timestamp}
 								</span>
