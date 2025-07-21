@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@hooks/use-theme";
 
 export const metadata: Metadata = {
 	title: "SYA, votre assistant web",
@@ -8,14 +9,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-	children,
+        children,
 }: {
-	children: React.ReactNode;
+        children: React.ReactNode;
 }) {
 
-	return (
-		<html lang="fr">
-			<body className="antialiased">{children}</body>
-		</html>
-	);
+        return (
+                <html lang="fr">
+                        <body className="antialiased transition-colors">
+                                <ThemeProvider>{children}</ThemeProvider>
+                        </body>
+                </html>
+        );
 }

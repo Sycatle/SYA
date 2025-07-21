@@ -6,6 +6,8 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Moon,
+  Sun,
   Sparkles,
 } from "lucide-react"
 
@@ -29,6 +31,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@web/components/ui/sidebar"
+import { useTheme } from "@hooks/use-theme"
 
 export function NavUser({
   user,
@@ -40,6 +43,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <SidebarMenu>
@@ -101,6 +105,11 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem> */}
             </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={toggleTheme}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+              {theme === "dark" ? "Light mode" : "Dark mode"}
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
