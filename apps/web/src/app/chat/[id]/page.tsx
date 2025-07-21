@@ -4,11 +4,14 @@ import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ params }: { params: { id: string } }) {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: Props) {
+  const { id } = await params;
   const auth = await getServerAuth();
   if (!auth) redirect("/login");
   const username = auth.user.display_name || auth.user.email;
-  return (
-    <ChatRoom token={auth.token} username={username} conversationId={params.id} />
-  );
+  return <ChatRoom token={auth.token} username={username} conversationId={id} />;
 }
