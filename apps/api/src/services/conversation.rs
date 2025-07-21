@@ -9,7 +9,7 @@ use sqlx::PgPool;
 use tracing::{error, info};
 use uuid::Uuid;
 
-const TITLE_PROMPT: &str = "Génère un titre court (5 ou 6 mots max) pour résumer cette conversation. Ne mets pas de guillemets, pas de point, rien autour. Juste le titre brut.";
+const TITLE_PROMPT: &str = "Génère un titre court et percutant (3 à 6 mots) résumant la conversation ci-dessus. Pas de guillemets, pas de ponctuation autour, pas de nom propre ni d’info perso. Reste neutre et direct.";
 
 #[derive(Clone)]
 pub struct ConversationService {
