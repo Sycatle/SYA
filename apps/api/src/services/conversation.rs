@@ -107,6 +107,28 @@ impl ConversationService {
         Ok(result.rows_affected() > 0)
     }
 
+    pub async fn update_conversation_model(
+        &self,
+        user_id: Uuid,
+        conv_id: Uuid,
+        model: &str,
+    ) -> Result<Option<Conversation>> {
+        if !self.user_owns_conversation(user_id, conv_id).await? {
+            return Ok(None);
+        }
+
+        let conv = sqlx::query_as::<_, Conversation>(
+            "UPDATE conversations SET model = $1 WHERE id = $2 RETURNING *",
+        )
+        .bind(model)
+        .bind(conv_id)
+        .fetch_one(&self.pool)
+        .await
+        .context("Erreur lors de la mise à jour du modèle")?;
+
+        Ok(Some(conv))
+    }
+
     pub async fn add_message(
         &self,
         user_id: Uuid,
@@ -219,7 +241,7 @@ impl ConversationService {
                 content: conv.system_prompt.clone(),
             });
         }
-        
+
         let existing = self
             .fetch_conversation_messages(conv.id)
             .await
@@ -296,16 +318,15 @@ impl ConversationService {
     }
 
     async fn user_owns_conversation(&self, user_id: Uuid, conv_id: Uuid) -> Result<bool> {
-        let exists = sqlx::query_scalar::<_, i64>(
-            "SELECT 1 FROM conversations WHERE id = $1 AND user_id = $2",
+        let exists: (bool,) = sqlx::query_as(
+            "SELECT EXISTS(SELECT 1 FROM conversations WHERE id = $1 AND user_id = $2)",
         )
-        .bind(&conv_id)
-        .bind(&user_id)
-        .fetch_optional(&self.pool)
+        .bind(conv_id)
+        .bind(user_id)
+        .fetch_one(&self.pool)
         .await
-        .context("Erreur lors de la vérification de la propriété de la conversation")?
-        .is_some();
-        Ok(exists)
+        .context("Erreur lors de la vérification de la propriété de la conversation")?;
+        Ok(exists.0)
     }
 }
 

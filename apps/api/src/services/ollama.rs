@@ -2,7 +2,10 @@
 
 use crate::models::Message;
 use reqwest::Client;
+use serde_json::Value;
 use std::error::Error;
+
+const OLLAMA_LIBRARY_URL: &str = "https://ollama.ai";
 
 #[derive(Clone)]
 /// Thin wrapper around `reqwest` for calling the Ollama API.
@@ -50,5 +53,27 @@ impl OllamaService {
         let json: serde_json::Value = serde_json::from_str(&text)?;
 
         Ok(json)
+    }
+
+    /// Get the list of locally installed models from the Ollama daemon.
+    pub async fn list_local_models(&self) -> Result<Value, reqwest::Error> {
+        let url = format!("{}/api/tags", self.base_url.trim_end_matches('/'));
+        let resp = self.client.get(url).send().await?;
+        resp.json::<Value>().await
+    }
+
+    /// Fetch the list of models available in the public Ollama library.
+    pub async fn list_available_models(&self) -> Result<Value, reqwest::Error> {
+        let url = format!("{}/api/tags", OLLAMA_LIBRARY_URL);
+        let resp = self.client.get(url).send().await?;
+        resp.json::<Value>().await
+    }
+
+    /// Trigger the download of a model through the Ollama daemon.
+    pub async fn pull_model(&self, name: &str) -> Result<Value, reqwest::Error> {
+        let url = format!("{}/api/pull", self.base_url.trim_end_matches('/'));
+        let payload = serde_json::json!({ "name": name, "stream": false });
+        let resp = self.client.post(url).json(&payload).send().await?;
+        resp.json::<Value>().await
     }
 }

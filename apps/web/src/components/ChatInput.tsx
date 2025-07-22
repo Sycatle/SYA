@@ -4,17 +4,19 @@ import { useState } from "react";
 import { Textarea } from "@components/ui/textarea";
 
 interface ChatInputProps {
-	onSend: (message: string) => void;
-	isDisabled?: boolean;
-	isLoading?: boolean;
-	offsetLeftClass?: string;
+        onSend: (message: string) => void;
+        isDisabled?: boolean;
+        isLoading?: boolean;
+        offsetLeftClass?: string;
+        children?: React.ReactNode;
 }
 
 export default function ChatInput({
-	onSend,
-	isDisabled = false,
-	isLoading = false,
-	offsetLeftClass = "left-0",
+        onSend,
+        isDisabled = false,
+        isLoading = false,
+        offsetLeftClass = "left-0",
+        children,
 }: ChatInputProps) {
 	const [message, setMessage] = useState("");
 
@@ -39,14 +41,20 @@ export default function ChatInput({
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className={`fixed bottom-0 right-0 flex items-center gap-2 z-50  px-4 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}>
-			<div className="flex w-full items-center justify-between max-w-6xl mx-auto pb-4">
-				<Textarea
-					value={message}
-					onChange={(e) => setMessage(e.target.value)}
-					placeholder="Écrivez votre message ici..."
+                <form
+                        onSubmit={handleSubmit}
+                        className={`fixed bottom-0 right-0 flex flex-col items-center gap-2 z-50 px-4 text-black dark:text-white transition duration-300 font-semibold ${offsetLeftClass}`}
+                >
+                        {children && (
+                                <div className="flex w-full max-w-6xl mx-auto pb-1 justify-start">
+                                        {children}
+                                </div>
+                        )}
+                        <div className="flex w-full items-center justify-between max-w-6xl mx-auto pb-4">
+                                <Textarea
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                        placeholder="Écrivez votre message ici..."
 					aria-label="Zone de message"
 					className="flex-1 p-4 shadow rounded-lg bg-zinc-50 dark:bg-zinc-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none border transition"
 					onKeyDown={handleKeyDown}

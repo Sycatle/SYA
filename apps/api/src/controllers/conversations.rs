@@ -5,6 +5,7 @@ use actix_web::{web, HttpResponse, Responder};
 use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{CreateConversation, NewMessage};
 use crate::services::conversation::ConversationService;
+use serde::Deserialize;
 
 /// POST `/api/conversations` - create a new conversation for the current user.
 pub async fn create_conversation(
@@ -103,6 +104,30 @@ pub async fn list_messages(
 
     match service.list_messages(user_id, path.into_inner()).await {
         Ok(Some(list)) => HttpResponse::Ok().json(list),
+        Ok(None) => HttpResponse::NotFound().finish(),
+        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+    }
+}
+
+#[derive(Deserialize)]
+pub struct UpdateModel {
+    pub model: String,
+}
+
+/// PATCH `/api/conversations/{id}` - update conversation model.
+pub async fn update_model(
+    service: web::Data<ConversationService>,
+    user: AuthenticatedUser,
+    path: web::Path<uuid::Uuid>,
+    payload: web::Json<UpdateModel>,
+) -> impl Responder {
+    let user_id = user.0;
+
+    match service
+        .update_conversation_model(user_id, path.into_inner(), &payload.model)
+        .await
+    {
+        Ok(Some(conv)) => HttpResponse::Ok().json(conv),
         Ok(None) => HttpResponse::NotFound().finish(),
         Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
     }

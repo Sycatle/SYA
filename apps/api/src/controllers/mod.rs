@@ -9,6 +9,13 @@ use actix_web::web;
 pub fn register(cfg: &mut web::ServiceConfig) {
     cfg.service(web::resource("/api/health").route(web::get().to(health::ping)));
     cfg.service(web::resource("/api/ollama").route(web::get().to(ollama::ping)));
+    cfg.service(
+        web::resource("/api/ollama/models").route(web::get().to(ollama::list_local_models)),
+    );
+    cfg.service(
+        web::resource("/api/ollama/library").route(web::get().to(ollama::list_remote_models)),
+    );
+    cfg.service(web::resource("/api/ollama/pull").route(web::post().to(ollama::pull_model)));
     cfg.service(web::resource("/api/register").route(web::post().to(auth::register)));
     cfg.service(web::resource("/api/login").route(web::post().to(auth::login)));
     cfg.service(web::resource("/api/me").route(web::get().to(auth::me)));
@@ -21,7 +28,8 @@ pub fn register(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::resource("/api/conversations/{id}")
             .route(web::get().to(conversations::get_conversation))
-            .route(web::delete().to(conversations::delete_conversation)),
+            .route(web::delete().to(conversations::delete_conversation))
+            .route(web::patch().to(conversations::update_model)),
     );
     cfg.service(
         web::resource("/api/conversations/{id}/messages")

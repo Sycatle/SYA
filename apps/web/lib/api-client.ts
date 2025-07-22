@@ -135,11 +135,22 @@ export class ApiClient {
     await this.request(`/api/conversations/${id}`, { method: 'DELETE' });
   }
 
+  async updateConversation(id: string, payload: { model: string }): Promise<void> {
+    await this.request(`/api/conversations/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  }
+
   async addMessage(id: string, content: string, role: 'user' | 'assistant' | 'system' = 'user'): Promise<MessageRow> {
     return this.request(`/api/conversations/${id}/messages`, {
       method: 'POST',
       body: JSON.stringify({ role, content }),
     });
+  }
+
+  async listLocalModels(): Promise<{ models: { name: string }[] }> {
+    return this.request('/api/ollama/models');
   }
 }
 
