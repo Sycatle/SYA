@@ -40,7 +40,7 @@ pub struct Conversation {
 }
 
 /// Payload for creating a new conversation.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CreateConversation {
     pub title: Option<String>,
     pub system_prompt: Option<String>,

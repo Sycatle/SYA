@@ -23,6 +23,10 @@ rand_core = "0.6"
 tracing = "0.1"
 anyhow = "1"
 
+[dev-dependencies]
+httpmock = "0.7"
+serial_test = "2.0"
+
 [[bin]]
 name = "api"
 path = "src/main.rs"

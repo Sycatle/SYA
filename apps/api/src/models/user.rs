@@ -14,7 +14,7 @@ pub struct User {
 }
 
 /// Request payload to register a new user.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RegisterRequest {
     pub email: String,
     pub password: String,
@@ -22,21 +22,21 @@ pub struct RegisterRequest {
 }
 
 /// Request payload to log a user in.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
 }
 
 /// Response returned after successful authentication.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct AuthResponse {
     pub token: String,
     pub user: UserPublic,
 }
 
 /// Public view of a user returned to clients.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserPublic {
     pub id: uuid::Uuid,
     pub email: String,

@@ -22,7 +22,7 @@ pub struct MessageRow {
 }
 
 /// Payload for creating a new message.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NewMessage {
     pub role: String,
     pub content: String,

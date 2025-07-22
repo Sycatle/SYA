@@ -7,7 +7,10 @@ fn clear_env() {
     std::env::remove_var("JWT_SECRET");
 }
 
+use serial_test::serial;
+
 #[test]
+#[serial]
 fn from_env_uses_defaults() {
     clear_env();
 
@@ -22,6 +25,7 @@ fn from_env_uses_defaults() {
 }
 
 #[test]
+#[serial]
 fn from_env_reads_variables() {
     std::env::set_var("SERVER_ADDR", "1.2.3.4:8080");
     std::env::set_var("OLLAMA_URL", "http://example.com/");
