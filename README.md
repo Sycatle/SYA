@@ -101,7 +101,7 @@ sqlx migrate run
 | Phase 2 | 🛠️ En cours | Mémoire conversationnelle avancée, refonte backend, persistance   |
 | Phase 3 | ⏳ Bientôt    | Plugins, assistant vocal local, dashboard, domotique, chiffrement |
 
-**Voir la [Roadmap détaillée](https://github.com/Sycatle/SYA/issues/1) pour le suivi complet.**
+**Voir la [Roadmap détaillée](https://github.com/Sycatle/SYA/ROADMAP.md) pour le suivi complet.**
 
 ---
 
