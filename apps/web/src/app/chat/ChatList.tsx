@@ -54,7 +54,7 @@ export default function ChatList({ token }: { token: string }) {
     <div className="max-w-6xl mx-auto py-28 px-2">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Conversations</h1>
-        <button className="p-2 bg-blue-600 text-white rounded" onClick={handleNew}>
+        <button className="p-2 bg-primary text-primary-foreground rounded" onClick={handleNew}>
           Nouvelle conversation
         </button>
       </div>

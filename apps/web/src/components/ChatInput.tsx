@@ -56,7 +56,7 @@ export default function ChatInput({
 				<button
 					type="submit"
 					title="Envoyer le message"
-					className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+					className="p-2 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground transition disabled:opacity-50 disabled:cursor-not-allowed"
 					disabled={isDisabled || message.trim() === "" || isLoading}>
 					{isLoading ? (
 						<svg

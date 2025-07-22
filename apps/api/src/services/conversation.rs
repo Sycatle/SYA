@@ -212,7 +212,6 @@ impl ConversationService {
     }
 
     async fn build_conversation_history(&self, conv: &Conversation) -> Result<Vec<Message>> {
-<<<<<<< ours
         let mut history = Vec::new();
         if !conv.system_prompt.is_empty() {
             history.push(Message {
@@ -220,8 +219,7 @@ impl ConversationService {
                 content: conv.system_prompt.clone(),
             });
         }
-=======
->>>>>>> theirs
+        
         let existing = self
             .fetch_conversation_messages(conv.id)
             .await
