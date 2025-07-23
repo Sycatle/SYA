@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+// Typage compatible pour le composant code
 
 export default function MarkdownToTailwind({ children }: { children: string }) {
 	return (
@@ -67,7 +68,8 @@ export default function MarkdownToTailwind({ children }: { children: string }) {
 						{...props}
 					/>
 				),
-				code: ({ inline, className, children, ...props }) => {
+				code: (props: { inline?: boolean; className?: string; children?: React.ReactNode }) => {
+					const { inline, className, children, ...rest } = props;
 					const match = /language-(\w+)/.exec(className || "");
 					return !inline && match ? (
 						<SyntaxHighlighter
@@ -80,13 +82,13 @@ export default function MarkdownToTailwind({ children }: { children: string }) {
 								marginBottom: "1rem",
 								fontSize: "0.875rem",
 							}}
-							{...props}>
+							{...rest}>
 							{String(children).replace(/\n$/, "")}
 						</SyntaxHighlighter>
 					) : (
 						<code
 							className="w-full bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-sm"
-							{...props}>
+							{...rest}>
 							{children}
 						</code>
 					);

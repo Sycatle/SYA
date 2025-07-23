@@ -110,10 +110,12 @@ export class ApiClient {
     return res;
   }
 
-  async fetchMe(): Promise<AuthResponse> {
+  /**
+   * Récupère les infos utilisateur courant (ne met plus à jour le token).
+   */
+  async fetchMe(): Promise<{ user: { id: string; email: string; display_name?: string | null } }> {
     const res = await this.request<AuthResponse>('/api/me');
-    this.setToken(res.token);
-    return res;
+    return { user: res.user };
   }
 
   async listConversations(): Promise<Conversation[]> {
