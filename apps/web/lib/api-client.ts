@@ -114,8 +114,8 @@ export class ApiClient {
    * Récupère les infos utilisateur courant (ne met plus à jour le token).
    */
   async fetchMe(): Promise<{ user: { id: string; email: string; display_name?: string | null } }> {
-    const res = await this.request<AuthResponse>('/api/me');
-    return { user: res.user };
+    const user = await this.request<{ id: string; email: string; display_name?: string | null }>('/api/me');
+    return { user };
   }
 
   async listConversations(): Promise<Conversation[]> {

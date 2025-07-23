@@ -21,7 +21,7 @@ export default async function ChatLayout({
 	params: { id?: string };
 }) {
 	const auth = await getServerAuth();
-	if (!auth) redirect("/login");
+	if (!auth || !auth.user) redirect("/login");
 
 	const username = auth.user.display_name || auth.user.email;
 	const user = {

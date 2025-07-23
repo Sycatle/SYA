@@ -17,8 +17,13 @@ pub struct OllamaService {
 impl OllamaService {
     /// Create a new service pointing at the given base URL.
     pub fn new(base_url: String) -> Self {
+        let client = Client::builder()
+            .timeout(std::time::Duration::from_secs(30)) // 30 second timeout
+            .build()
+            .unwrap_or_else(|_| Client::new());
+
         Self {
-            client: Client::new(),
+            client,
             base_url,
         }
     }
@@ -48,7 +53,8 @@ impl OllamaService {
         let resp = self.client.post(&url).json(&payload).send().await?;
         let text = resp.text().await?;
 
-        println!("RAW Ollama response: {}", text);
+        // Log response length for debugging without exposing content
+        tracing::debug!("Ollama response received, length: {} chars", text.len());
 
         let json: serde_json::Value = serde_json::from_str(&text)?;
 

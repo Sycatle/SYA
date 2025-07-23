@@ -21,9 +21,10 @@ export async function POST(req: NextRequest) {
 	nextResponse.cookies.set("authToken", data.token, {
 		path: "/",
 		httpOnly: true,
-		sameSite: "lax",
+		sameSite: "strict",
 		secure: process.env.NODE_ENV === "production",
-		maxAge: 60 * 60 * 24 * 7,
+		maxAge: 60 * 15, // 15 minutes (même durée que JWT)
+		domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
 	});
 
 	return nextResponse;
