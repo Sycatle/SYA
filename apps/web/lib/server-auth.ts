@@ -11,7 +11,7 @@ export async function getServerAuth(): Promise<AuthResponse | null> {
     const client = new ApiClient();
     client.setToken(token);
     const res = await client.fetchMe();
-    return res;
+    return { token, user: res.user };
   } catch {
     return null;
   }

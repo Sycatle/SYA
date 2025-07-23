@@ -53,19 +53,16 @@ pub async fn login(
     }
 }
 
-/// Retrieve the authenticated user and issue a new token.
+/// Retrieve the authenticated user (no new token).
 pub async fn me(
     users: web::Data<UserService>,
-    auth: web::Data<AuthService>,
+    _auth: web::Data<AuthService>,
     user: AuthenticatedUser,
 ) -> impl Responder {
     match users.find_by_id(user.0).await {
-        Ok(Some(db_user)) => match auth.generate_token(db_user.id) {
-            Ok(new_token) => HttpResponse::Ok().json(AuthResponse {
-                token: new_token,
-                user: db_user.into(),
-            }),
-            Err(_) => HttpResponse::InternalServerError().finish(),
+        Ok(Some(db_user)) => {
+            let public_user: crate::models::user::UserPublic = db_user.into();
+            HttpResponse::Ok().json(public_user)
         },
         Ok(None) => HttpResponse::Unauthorized().finish(),
         Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
