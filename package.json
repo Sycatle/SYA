@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "next dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "test": "echo \"No tests yet\" && exit 0",
@@ -18,7 +18,10 @@
     "commitlint": "^19.8.1",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "^8.0.0",
+    "next": "^15.4.3",
     "prettier": "^3.6.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "turbo": "^2.5.4",
     "typescript": "5.8.3"
   },
@@ -30,5 +33,8 @@
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "react-server-dom-webpack": "^19.1.0"
   }
 }

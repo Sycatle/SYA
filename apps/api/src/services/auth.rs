@@ -51,7 +51,7 @@ impl AuthService {
 
     /// Generate a JWT for the given user id.
     pub fn generate_token(&self, user_id: Uuid) -> Result<String, jsonwebtoken::errors::Error> {
-        let expiration = Utc::now() + Duration::minutes(30);
+        let expiration = Utc::now() + Duration::minutes(15);
         let claims = Claims {
             sub: user_id,
             exp: expiration.timestamp() as usize,

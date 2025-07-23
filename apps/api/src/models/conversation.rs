@@ -43,8 +43,8 @@ pub struct Conversation {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CreateConversation {
     pub title: Option<String>,
-    pub system_prompt: Option<String>,
     pub model: Option<String>,
+    pub system_prompt: Option<String>,
 }
 
 /// A conversation along with all its messages.

@@ -5,19 +5,61 @@ use actix_web::{web, HttpResponse, Responder};
 use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{CreateConversation, NewMessage};
 use crate::services::conversation::ConversationService;
+use crate::services::ollama::OllamaService;
 use serde::Deserialize;
+use tracing::error;
+use std::collections::HashSet;
 
 /// POST `/api/conversations` - create a new conversation for the current user.
 pub async fn create_conversation(
     service: web::Data<ConversationService>,
+    ollama: web::Data<OllamaService>,
     user: AuthenticatedUser,
     payload: web::Json<CreateConversation>,
 ) -> impl Responder {
+    // Validate input manually
+    let req = payload.into_inner();
+    if let Some(ref model) = req.model {
+        if model.len() > 50 {
+            return HttpResponse::BadRequest().body("Model name must be less than 50 characters");
+        }
+        // Validate that the model exists
+        match ollama.list_local_models().await {
+            Ok(models_json) => {
+                if let Some(models) = models_json.get("models") {
+                    if let Some(models_array) = models.as_array() {
+                        let available_models: HashSet<String> = models_array
+                            .iter()
+                            .filter_map(|m| m.get("name").and_then(|n| n.as_str()))
+                            .map(|s| s.to_string())
+                            .collect();
+                        
+                        if !available_models.contains(model) {
+                            return HttpResponse::BadRequest().body("Invalid model name");
+                        }
+                    }
+                }
+            }
+            Err(_) => {
+                // If we can't verify the model, reject the request
+                return HttpResponse::BadRequest().body("Unable to verify model availability");
+            }
+        }
+    }
+    if let Some(ref prompt) = req.system_prompt {
+        if prompt.len() > 1000 {
+            return HttpResponse::BadRequest().body("System prompt must be less than 1000 characters");
+        }
+    }
+
     let user_id = user.0;
 
-    match service.create_conversation(user_id, &payload).await {
+    match service.create_conversation(user_id, &req).await {
         Ok(conv) => HttpResponse::Ok().json(conv),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("create_conversation error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -30,7 +72,10 @@ pub async fn list_conversations(
 
     match service.list_conversations(user_id).await {
         Ok(list) => HttpResponse::Ok().json(list),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("list_conversations error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -48,7 +93,10 @@ pub async fn get_conversation(
     {
         Ok(Some(detail)) => HttpResponse::Ok().json(detail),
         Ok(None) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("get_conversation error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -66,7 +114,10 @@ pub async fn delete_conversation(
     {
         Ok(true) => HttpResponse::NoContent().finish(),
         Ok(false) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("delete_conversation error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -77,19 +128,26 @@ pub async fn add_message(
     path: web::Path<uuid::Uuid>,
     payload: web::Json<NewMessage>,
 ) -> impl Responder {
-    let user_id = user.0;
+    // Validate input manually
+    let req = payload.into_inner();
+    if req.role != "user" && req.role != "assistant" && req.role != "system" {
+        return HttpResponse::BadRequest().body("Invalid role. Must be 'user', 'assistant', or 'system'");
+    }
+    if req.content.len() > 10000 {
+        return HttpResponse::BadRequest().body("Message content must be less than 10000 characters");
+    }
+    if req.content.is_empty() {
+        return HttpResponse::BadRequest().body("Message content cannot be empty");
+    }
 
-    match service
-        .add_message(user_id, path.into_inner(), &payload)
-        .await
-    {
+    let user_id = user.0;
+    let conversation_id = path.into_inner();
+
+    match service.add_message(user_id, conversation_id, &req).await {
         Ok(msg) => HttpResponse::Ok().json(msg),
         Err(e) => {
-            if e.to_string() == "conversation not found" {
-                HttpResponse::NotFound().finish()
-            } else {
-                HttpResponse::InternalServerError().body(e.to_string())
-            }
+            error!("add_message error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
         }
     }
 }
@@ -105,7 +163,10 @@ pub async fn list_messages(
     match service.list_messages(user_id, path.into_inner()).await {
         Ok(Some(list)) => HttpResponse::Ok().json(list),
         Ok(None) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("list_messages error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -129,6 +190,9 @@ pub async fn update_model(
     {
         Ok(Some(conv)) => HttpResponse::Ok().json(conv),
         Ok(None) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("update_model error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }

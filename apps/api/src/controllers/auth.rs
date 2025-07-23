@@ -5,6 +5,17 @@ use actix_web::{web, HttpResponse, Responder};
 use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{AuthResponse, LoginRequest, RegisterRequest};
 use crate::services::{auth::AuthService, user::UserService};
+use tracing::error;
+use regex::Regex;
+
+// Email validation regex
+static EMAIL_REGEX: once_cell::sync::Lazy<Regex> = once_cell::sync::Lazy::new(|| {
+    Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap()
+});
+
+fn is_valid_email(email: &str) -> bool {
+    EMAIL_REGEX.is_match(email)
+}
 
 /// Register a new user and immediately return an authentication token.
 pub async fn register(
@@ -12,13 +23,27 @@ pub async fn register(
     auth: web::Data<AuthService>,
     payload: web::Json<RegisterRequest>,
 ) -> impl Responder {
-    let hash = match auth.hash_password(&payload.password) {
+    // Validate input manually
+    let req = payload.into_inner();
+    if req.email.is_empty() || !is_valid_email(&req.email) {
+        return HttpResponse::BadRequest().body("Invalid email format");
+    }
+    if req.password.len() < 8 || req.password.len() > 128 {
+        return HttpResponse::BadRequest().body("Password must be between 8 and 128 characters");
+    }
+    if let Some(ref name) = req.display_name {
+        if name.len() > 100 {
+            return HttpResponse::BadRequest().body("Display name must be less than 100 characters");
+        }
+    }
+
+    let hash = match auth.hash_password(&req.password) {
         Ok(h) => h,
         Err(_) => return HttpResponse::InternalServerError().finish(),
     };
 
     match users
-        .create_user(&payload.email, &hash, &payload.display_name)
+        .create_user(&req.email, &hash, &req.display_name)
         .await
     {
         Ok(user) => match auth.generate_token(user.id) {
@@ -28,7 +53,10 @@ pub async fn register(
             }),
             Err(_) => HttpResponse::InternalServerError().finish(),
         },
-        Err(e) => HttpResponse::BadRequest().body(e.to_string()),
+        Err(e) => {
+            error!("register error: {e}");
+            HttpResponse::BadRequest().body("Invalid request")
+        },
     }
 }
 
@@ -38,8 +66,17 @@ pub async fn login(
     auth: web::Data<AuthService>,
     payload: web::Json<LoginRequest>,
 ) -> impl Responder {
-    match users.find_by_email(&payload.email).await {
-        Ok(Some(u)) if auth.verify_password(&payload.password, &u.password_hash) => {
+    // Validate input manually
+    let req = payload.into_inner();
+    if req.email.is_empty() || !is_valid_email(&req.email) {
+        return HttpResponse::BadRequest().body("Invalid email format");
+    }
+    if req.password.is_empty() {
+        return HttpResponse::BadRequest().body("Password cannot be empty");
+    }
+
+    match users.find_by_email(&req.email).await {
+        Ok(Some(u)) if auth.verify_password(&req.password, &u.password_hash) => {
             match auth.generate_token(u.id) {
                 Ok(token) => HttpResponse::Ok().json(AuthResponse {
                     token,
@@ -48,26 +85,29 @@ pub async fn login(
                 Err(_) => HttpResponse::InternalServerError().finish(),
             }
         }
-        Ok(_) => HttpResponse::Unauthorized().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Ok(_) => HttpResponse::Unauthorized().body("Invalid credentials"),
+        Err(e) => {
+            error!("login error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
-/// Retrieve the authenticated user and issue a new token.
+/// Retrieve the authenticated user (no new token).
 pub async fn me(
     users: web::Data<UserService>,
-    auth: web::Data<AuthService>,
+    _auth: web::Data<AuthService>,
     user: AuthenticatedUser,
 ) -> impl Responder {
     match users.find_by_id(user.0).await {
-        Ok(Some(db_user)) => match auth.generate_token(db_user.id) {
-            Ok(new_token) => HttpResponse::Ok().json(AuthResponse {
-                token: new_token,
-                user: db_user.into(),
-            }),
-            Err(_) => HttpResponse::InternalServerError().finish(),
+        Ok(Some(db_user)) => {
+            let public_user: crate::models::user::UserPublic = db_user.into();
+            HttpResponse::Ok().json(public_user)
         },
         Ok(None) => HttpResponse::Unauthorized().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("me error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
