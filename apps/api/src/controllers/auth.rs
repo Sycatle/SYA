@@ -5,6 +5,7 @@ use actix_web::{web, HttpResponse, Responder};
 use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{AuthResponse, LoginRequest, RegisterRequest};
 use crate::services::{auth::AuthService, user::UserService};
+use tracing::error;
 
 /// Register a new user and immediately return an authentication token.
 pub async fn register(
@@ -28,7 +29,10 @@ pub async fn register(
             }),
             Err(_) => HttpResponse::InternalServerError().finish(),
         },
-        Err(e) => HttpResponse::BadRequest().body(e.to_string()),
+        Err(e) => {
+            error!("register error: {e}");
+            HttpResponse::BadRequest().body("Invalid request")
+        },
     }
 }
 
@@ -49,7 +53,10 @@ pub async fn login(
             }
         }
         Ok(_) => HttpResponse::Unauthorized().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("login error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -65,6 +72,9 @@ pub async fn me(
             HttpResponse::Ok().json(public_user)
         },
         Ok(None) => HttpResponse::Unauthorized().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("me error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
