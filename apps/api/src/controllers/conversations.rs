@@ -6,6 +6,7 @@ use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{CreateConversation, NewMessage};
 use crate::services::conversation::ConversationService;
 use serde::Deserialize;
+use tracing::error;
 
 /// POST `/api/conversations` - create a new conversation for the current user.
 pub async fn create_conversation(
@@ -17,7 +18,10 @@ pub async fn create_conversation(
 
     match service.create_conversation(user_id, &payload).await {
         Ok(conv) => HttpResponse::Ok().json(conv),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("create_conversation error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -30,7 +34,10 @@ pub async fn list_conversations(
 
     match service.list_conversations(user_id).await {
         Ok(list) => HttpResponse::Ok().json(list),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("list_conversations error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -48,7 +55,10 @@ pub async fn get_conversation(
     {
         Ok(Some(detail)) => HttpResponse::Ok().json(detail),
         Ok(None) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("get_conversation error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -66,7 +76,10 @@ pub async fn delete_conversation(
     {
         Ok(true) => HttpResponse::NoContent().finish(),
         Ok(false) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("delete_conversation error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -85,11 +98,8 @@ pub async fn add_message(
     {
         Ok(msg) => HttpResponse::Ok().json(msg),
         Err(e) => {
-            if e.to_string() == "conversation not found" {
-                HttpResponse::NotFound().finish()
-            } else {
-                HttpResponse::InternalServerError().body(e.to_string())
-            }
+            error!("add_message error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
         }
     }
 }
@@ -105,7 +115,10 @@ pub async fn list_messages(
     match service.list_messages(user_id, path.into_inner()).await {
         Ok(Some(list)) => HttpResponse::Ok().json(list),
         Ok(None) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("list_messages error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
 
@@ -129,6 +142,9 @@ pub async fn update_model(
     {
         Ok(Some(conv)) => HttpResponse::Ok().json(conv),
         Ok(None) => HttpResponse::NotFound().finish(),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
+        Err(e) => {
+            error!("update_model error: {e}");
+            HttpResponse::InternalServerError().body("Internal server error")
+        },
     }
 }
