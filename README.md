@@ -7,6 +7,14 @@
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange)](https://www.rust-lang.org)
 ![Non Commercial Use Only](https://img.shields.io/badge/usage-non--commercial-red)
 
+## 🚀 Liens rapides
+
+- **[🌐 Site officiel](http://localhost:3000)** - Télécharger et essayer SYA
+- **[📥 Téléchargements](http://localhost:3000/#download)** - Windows, macOS, Linux
+- **[🔐 Confidentialité](http://localhost:3000/privacy)** - Politique de protection des données
+- **[📚 Documentation](http://localhost:3000/docs/)** - Guides et tutoriels
+- **[💬 Essayer SYA](http://localhost:3000/chat)** - Interface de chat en ligne
+
 ---
 
 ## Aperçu
@@ -47,23 +55,58 @@ stop.sh               Script d'arrêt
 
 ---
 
-## Installation rapide
+## 📥 Téléchargement et Installation
 
-### Prérequis
+### 🚀 **Installation en 3 étapes simples :**
+
+1. **📥 Téléchargez** depuis notre [site officiel](http://localhost:3000)
+2. **⚙️ Installez** selon votre système d'exploitation
+3. **🎯 Utilisez** SYA en local !
+
+### 🌐 **Site officiel avec téléchargements directs :**
+
+**[Visitez notre site officiel](http://localhost:3000)** pour télécharger SYA :
+
+- **🪟 Windows** : Installateur automatique + application portable
+- **🍎 macOS** : Application native + package d'installation  
+- **🐧 Linux** : Package d'installation + code source
+
+### 📚 **Documentation complète :**
+- **[Guide d'installation détaillé](http://localhost:3000/docs/installation.md)** : Instructions pas à pas
+- **[Politique de confidentialité](http://localhost:3000/privacy)** : Protection de vos données
+- **[Documentation complète](http://localhost:3000/docs/)** : Guides et tutoriels
+
+---
+
+## ⚙️ Installation rapide (Développement)
+
+> 💡 **Pour les utilisateurs finaux** : Utilisez plutôt notre [site officiel](http://localhost:3000) pour télécharger SYA.
+
+### Prérequis (Développement)
 
 * [Docker](https://www.docker.com/) (obligatoire)
-* [pnpm](https://pnpm.io/) (installé automatiquement si manquant)
+* [Node.js](https://nodejs.org/) 18+ (pour le développement)
+* [Rust](https://rust-lang.org/) (pour la compilation)
 
-### 🚀 Démarrage en une commande
+### 🚀 Démarrage rapide (Développement)
 
 ```bash
 git clone https://github.com/Sycatle/SYA.git
 cd SYA
-chmod +x start.sh stop.sh
 ./start.sh
 ```
 
-> Le script vérifie automatiquement les prérequis, installe les dépendances et démarre tous les services !
+### 📦 Création de packages (Développement)
+
+```bash
+# Créer tous les packages d'installation
+./build-packages.sh
+
+# Ou créer des packages spécifiques
+./scripts/distribution/create-package.sh      # Package générique
+./scripts/distribution/create-macos-app.sh    # Application macOS
+./scripts/distribution/create-windows-app.sh  # Application Windows
+```
 
 ### Services démarrés
 
@@ -76,9 +119,13 @@ chmod +x start.sh stop.sh
 
 ```bash
 # Démarrer SYA
+./start-sya.sh
+# ou simplement
 ./start.sh
 
 # Arrêter SYA
+./stop-sya.sh
+# ou simplement
 ./stop.sh
 
 # Voir les logs
@@ -93,12 +140,29 @@ docker-compose down -v
 
 ---
 
-## Première utilisation
+## 🎯 Première utilisation
 
-1. **Ouvrez** [http://localhost:3000](http://localhost:3000)
-2. **Créez un compte** avec votre email
-3. **Connectez-vous** et commencez à discuter !
-4. **Téléchargez un modèle** via l'interface (ex: llama3, mistral, etc.)
+### 🌐 **1. Essayer SYA en ligne (Recommandé)**
+Visitez **[http://localhost:3000](http://localhost:3000)** pour tester SYA directement dans votre navigateur !
+
+### 📦 **2. Installation locale complète**
+
+#### **Étape 1 : Téléchargement**
+- Visitez notre **[site officiel](http://localhost:3000)**
+- Choisissez votre système d'exploitation (Windows/macOS/Linux)
+- Téléchargez le package d'installation
+
+#### **Étape 2 : Installation**
+- **Windows** : Exécutez l'installateur ou décompressez l'application portable
+- **macOS** : Installez l'application native ou utilisez le package
+- **Linux** : Suivez les instructions du package d'installation
+
+#### **Étape 3 : Configuration**
+1. **Lancez SYA** selon votre méthode d'installation
+2. **Ouvrez** [http://localhost:3000](http://localhost:3000)
+3. **Créez un compte** avec votre email
+4. **Connectez-vous** et commencez à discuter !
+5. **Téléchargez un modèle** via l'interface (ex: llama3, mistral, etc.)
 
 > 💡 **Conseil** : Commencez avec `llama3` qui est rapide et efficace pour la plupart des tâches.
 
@@ -175,6 +239,26 @@ Envie de participer ? Toutes les contributions sont bienvenues !
 **Business Source License 1.1**
 Usage **strictement non commercial** jusqu'au **1er janvier 2028**, puis conversion automatique en [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 Voir [LICENSE](LICENSE) pour les détails.
+
+---
+
+## 👨‍💻 Crédits
+
+### **Création et développement**
+- **SYA** : Assistant IA local développé par [@sycatle](https://github.com/Sycatle)
+- **Site web** : Interface moderne Next.js avec design responsive
+- **Backend** : API Rust (Actix Web) pour performance et sécurité
+- **Base de données** : PostgreSQL pour persistance des conversations
+
+### **Technologies utilisées**
+- **Frontend** : Next.js, React, Tailwind CSS, TypeScript
+- **Backend** : Rust, Actix Web, PostgreSQL, Docker
+- **IA** : Ollama pour l'inférence LLM locale
+- **Design** : Interface moderne avec glassmorphism et gradients
+
+### **Contributeurs**
+Merci à tous les contributeurs qui participent au développement de SYA !
+Voir la liste complète sur [GitHub](https://github.com/Sycatle/SYA/graphs/contributors).
 
 ---
 

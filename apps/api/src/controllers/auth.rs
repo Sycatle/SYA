@@ -85,7 +85,7 @@ pub async fn login(
                 Err(_) => HttpResponse::InternalServerError().finish(),
             }
         }
-        Ok(_) => HttpResponse::Unauthorized().finish(),
+        Ok(_) => HttpResponse::Unauthorized().body("Invalid credentials"),
         Err(e) => {
             error!("login error: {e}");
             HttpResponse::InternalServerError().body("Internal server error")

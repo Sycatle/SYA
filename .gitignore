@@ -1,3 +1,7 @@
+# --- DEV ---
+*.exe
+show-landing.sh
+
 # --- NODE / JS ---
 node_modules/
 .pnp/
