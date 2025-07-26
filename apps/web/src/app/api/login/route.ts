@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 		httpOnly: true,
 		sameSite: "strict",
 		secure: process.env.NODE_ENV === "production",
-		maxAge: 60 * 60, // 1 hour (extended for better user experience)
+		maxAge: 60 * 60,
 		domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
 	});
 
