@@ -52,7 +52,7 @@ export default function LoginForm() {
 
 			router.push("/chat");
 		} catch {
-			setError("Erreur d'authentification");
+			setError(t[lang].error);
 		}
 	};
 
@@ -141,7 +141,7 @@ export default function LoginForm() {
 						{/* Error Message */}
 						{error && (
 							<div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3">
-								<p className="text-red-400 text-sm">{t[lang].error}</p>
+								<p className="text-red-400 text-sm">{error}</p>
 							</div>
 						)}
 

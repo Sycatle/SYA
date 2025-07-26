@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Brain, Mail, Lock, User, ArrowRight, Shield, CheckCircle } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, Shield, CheckCircle } from "lucide-react";
 
 export default function RegisterForm() {
 	const router = useRouter();
@@ -12,7 +12,7 @@ export default function RegisterForm() {
 	const [displayName, setDisplayName] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [lang, setLang] = useState<'fr' | 'en'>("fr");
-	
+
 	const t = {
 		fr: {
 			title: "Créer votre compte SYA",
@@ -66,7 +66,7 @@ export default function RegisterForm() {
 
 			router.push("/chat");
 		} catch {
-			setError("Erreur lors de l'inscription");
+			setError(t[lang].error);
 		}
 	};
 
@@ -74,20 +74,16 @@ export default function RegisterForm() {
 		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
 			{/* Language Selector */}
 			<div className="absolute top-6 right-6 flex gap-2 z-10">
-				<button
-					onClick={() => setLang('fr')}
-					aria-label="Français"
-					className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${lang === 'fr' ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
-				>
-					<Image src="/flag-fr.svg" alt="Français" width={28} height={20} className="w-full h-full object-cover" />
-				</button>
-				<button
-					onClick={() => setLang('en')}
-					aria-label="English"
-					className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${lang === 'en' ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
-				>
-					<Image src="/flag-gb.png" alt="English" width={28} height={20} className="w-full h-full object-cover" />
-				</button>
+				{["fr", "en"].map((l) => (
+					<button
+						key={l}
+						onClick={() => setLang(l as 'fr' | 'en')}
+						aria-label={l === "fr" ? "Français" : "English"}
+						className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${lang === l ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
+					>
+						<Image src={l === "fr" ? "/flag-fr.svg" : "/flag-gb.png"} alt={l} width={28} height={20} className="w-full h-full object-cover" />
+					</button>
+				))}
 			</div>
 
 			{/* Back to Home */}
@@ -170,7 +166,7 @@ export default function RegisterForm() {
 						{/* Error Message */}
 						{error && (
 							<div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3">
-								<p className="text-red-400 text-sm">{t[lang].error}</p>
+								<p className="text-red-400 text-sm">{error}</p>
 							</div>
 						)}
 
