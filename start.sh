@@ -49,8 +49,13 @@ fi
 
 # Vérifier pnpm (optionnel)
 if ! command -v pnpm &> /dev/null; then
-    print_warning "pnpm n'est pas installé. Installation automatique..."
-    npm install -g pnpm
+    print_warning "pnpm n'est pas installé. Installation locale..."
+    curl -fsSL https://get.pnpm.io/install.sh | sh -
+    export PATH="$HOME/.local/share/pnpm:$PATH"
+    if ! command -v pnpm &> /dev/null; then
+        print_error "L'installation de pnpm a échoué. Veuillez l'installer manuellement en suivant les instructions sur https://pnpm.io/installation."
+        exit 1
+    fi
 fi
 
 print_success "Tous les prérequis sont satisfaits !"
