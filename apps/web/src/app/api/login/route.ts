@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 		httpOnly: true,
 		sameSite: "strict",
 		secure: process.env.NODE_ENV === "production",
-		maxAge: 60 * 15, // 15 minutes (même durée que JWT)
+		maxAge: 60 * 60, // 1 hour (extended for better user experience)
 		domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
 	});
 
