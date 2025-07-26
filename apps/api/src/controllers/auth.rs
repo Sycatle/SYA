@@ -1,12 +1,12 @@
 //! Handlers for authentication-related HTTP endpoints.
 
 use actix_web::{web, HttpResponse, Responder};
+use tracing::error;
+use regex::Regex;
 
 use crate::auth_extractor::AuthenticatedUser;
 use crate::models::{AuthResponse, LoginRequest, RegisterRequest};
 use crate::services::{auth::AuthService, user::UserService};
-use tracing::error;
-use regex::Regex;
 
 // Email validation regex
 static EMAIL_REGEX: once_cell::sync::Lazy<Regex> = once_cell::sync::Lazy::new(|| {
@@ -23,8 +23,9 @@ pub async fn register(
     auth: web::Data<AuthService>,
     payload: web::Json<RegisterRequest>,
 ) -> impl Responder {
-    // Validate input manually
     let req = payload.into_inner();
+
+    // Validate input manually
     if req.email.is_empty() || !is_valid_email(&req.email) {
         return HttpResponse::BadRequest().body("Invalid email format");
     }
@@ -42,10 +43,7 @@ pub async fn register(
         Err(_) => return HttpResponse::InternalServerError().finish(),
     };
 
-    match users
-        .create_user(&req.email, &hash, &req.display_name)
-        .await
-    {
+    match users.create_user(&req.email, &hash, &req.display_name).await {
         Ok(user) => match auth.generate_token(user.id) {
             Ok(token) => HttpResponse::Ok().json(AuthResponse {
                 token,
@@ -56,7 +54,7 @@ pub async fn register(
         Err(e) => {
             error!("register error: {e}");
             HttpResponse::BadRequest().body("Invalid request")
-        },
+        }
     }
 }
 
@@ -66,8 +64,9 @@ pub async fn login(
     auth: web::Data<AuthService>,
     payload: web::Json<LoginRequest>,
 ) -> impl Responder {
-    // Validate input manually
     let req = payload.into_inner();
+
+    // Validate input manually
     if req.email.is_empty() || !is_valid_email(&req.email) {
         return HttpResponse::BadRequest().body("Invalid email format");
     }
@@ -85,11 +84,8 @@ pub async fn login(
                 Err(_) => HttpResponse::InternalServerError().finish(),
             }
         }
-        Ok(_) => HttpResponse::Unauthorized().body("Invalid credentials"),
-        Err(e) => {
-            error!("login error: {e}");
-            HttpResponse::InternalServerError().body("Internal server error")
-        },
+        Ok(_) => HttpResponse::Unauthorized().finish(),
+        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
     }
 }
 
@@ -102,12 +98,12 @@ pub async fn me(
     match users.find_by_id(user.0).await {
         Ok(Some(db_user)) => {
             let public_user: crate::models::user::UserPublic = db_user.into();
-            HttpResponse::Ok().json(public_user)
-        },
+            HttpResponse::Ok().json(serde_json::json!({ "user": public_user }))
+        }
         Ok(None) => HttpResponse::Unauthorized().finish(),
         Err(e) => {
             error!("me error: {e}");
             HttpResponse::InternalServerError().body("Internal server error")
-        },
+        }
     }
 }
