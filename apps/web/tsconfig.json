@@ -23,7 +23,7 @@
       "@web/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@contexts/*": ["./src/contexts/*"],
-      "@lib/*": ["./lib/*"],
+      "@lib/*": ["./src/lib/*"],
       "@hooks/*": ["./src/hooks/*"]
     }
   },
