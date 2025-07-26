@@ -3,39 +3,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Brain, Mail, Lock, ArrowRight, Shield } from "lucide-react";
+import { Mail, Lock, ArrowRight, Shield } from "lucide-react";
+import { useLanguage } from "@hooks/use-language";
 
 export default function LoginForm() {
 	const router = useRouter();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [error, setError] = useState<string | null>(null);
-	const [lang, setLang] = useState<'fr' | 'en'>("fr");
-
-	const t = {
-		fr: {
-			title: "Connexion à SYA",
-			subtitle: "Accédez à votre assistant IA personnel",
-			email: "Adresse email",
-			password: "Mot de passe",
-			login: "Se connecter",
-			noAccount: "Pas encore de compte ?",
-			register: "Créer un compte",
-			error: "Erreur d'authentification",
-			backToHome: "Retour à l'accueil"
-		},
-		en: {
-			title: "Sign in to SYA",
-			subtitle: "Access your personal AI assistant",
-			email: "Email address",
-			password: "Password",
-			login: "Sign in",
-			noAccount: "No account yet?",
-			register: "Create account",
-			error: "Authentication error",
-			backToHome: "Back to home"
-		}
-	};
+        const [error, setError] = useState<string | null>(null);
+        const { locale, setLocale, t } = useLanguage();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -52,7 +28,7 @@ export default function LoginForm() {
 
 			router.push("/chat");
 		} catch {
-			setError(t[lang].error);
+                        setError(t("login.error"));
 		}
 	};
 
@@ -61,16 +37,16 @@ export default function LoginForm() {
 			{/* Language Selector */}
 			<div className="absolute top-6 right-6 flex gap-2 z-10">
 				<button
-					onClick={() => setLang('fr')}
+                                        onClick={() => setLocale('fr')}
 					aria-label="Français"
-					className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${lang === 'fr' ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
+                                        className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${locale === 'fr' ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
 				>
 					<Image src="/flag-fr.svg" alt="Français" width={28} height={20} className="w-full h-full object-cover" />
 				</button>
 				<button
-					onClick={() => setLang('en')}
+                                        onClick={() => setLocale('en')}
 					aria-label="English"
-					className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${lang === 'en' ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
+                                        className={`transition-transform duration-200 rounded-full border-2 overflow-hidden aspect-[28/20] w-10 h-7 p-0 ${locale === 'en' ? 'border-blue-400 scale-110' : 'border-transparent opacity-70 hover:scale-105'}`}
 				>
 					<Image src="/flag-gb.png" alt="English" width={28} height={20} className="w-full h-full object-cover" />
 				</button>
@@ -81,8 +57,8 @@ export default function LoginForm() {
 				href="/"
 				className="absolute top-6 left-6 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
 			>
-				<ArrowRight className="w-4 h-4 rotate-180" />
-				{t[lang].backToHome}
+                                <ArrowRight className="w-4 h-4 rotate-180" />
+                                {t("login.backToHome")}
 			</Link>
 
 			{/* Login Card */}
@@ -99,8 +75,8 @@ export default function LoginForm() {
 						/>
 						<span className="text-3xl font-bold text-white">SYA</span>
 					</div>
-					<h1 className="text-3xl font-bold text-white mb-2">{t[lang].title}</h1>
-					<p className="text-gray-300">{t[lang].subtitle}</p>
+                                        <h1 className="text-3xl font-bold text-white mb-2">{t("login.title")}</h1>
+                                        <p className="text-gray-300">{t("login.subtitle")}</p>
 				</div>
 
 				{/* Form Card */}
@@ -110,7 +86,7 @@ export default function LoginForm() {
 						<div className="space-y-2">
 							<label className="text-sm font-medium text-gray-300 flex items-center gap-2">
 								<Mail className="w-4 h-4" />
-								{t[lang].email}
+                                                                {t("login.email")}
 							</label>
 							<input
 								type="email"
@@ -126,7 +102,7 @@ export default function LoginForm() {
 						<div className="space-y-2">
 							<label className="text-sm font-medium text-gray-300 flex items-center gap-2">
 								<Lock className="w-4 h-4" />
-								{t[lang].password}
+                                                                {t("login.password")}
 							</label>
 							<input
 								type="password"
@@ -150,19 +126,19 @@ export default function LoginForm() {
 							type="submit"
 							className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
 						>
-							{t[lang].login}
+                                                        {t("login.login")}
 						</button>
 					</form>
 
 					{/* Register Link */}
 					<div className="mt-6 text-center">
 						<p className="text-gray-300">
-							{t[lang].noAccount}{" "}
+                                                        {t("login.noAccount")}{" "}
 							<Link 
 								href="/register" 
 								className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
 							>
-								{t[lang].register}
+                                                                {t("login.register")}
 							</Link>
 						</p>
 					</div>
@@ -172,7 +148,7 @@ export default function LoginForm() {
 				<div className="mt-6 text-center">
 					<div className="flex items-center justify-center gap-2 text-gray-400 text-sm">
 						<Shield className="w-4 h-4" />
-						<span>Vos données restent sur votre machine</span>
+                                                <span>{t("login.dataNotice")}</span>
 					</div>
 				</div>
 			</div>

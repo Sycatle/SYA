@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@hooks/use-theme";
+import Providers from "./providers";
+import en from "@web/languages/english.json";
 
 export const metadata: Metadata = {
-	title: "SYA, votre assistant web",
-	description:
-		"SYA est un assistant web qui vous aide à naviguer sur Internet.",
+        title: en.metadata.title,
+        description: en.metadata.description,
 };
 
 export default function RootLayout({
@@ -15,9 +15,9 @@ export default function RootLayout({
 }) {
 
         return (
-                <html lang="fr">
+                <html lang="en">
                         <body className="antialiased transition-colors">
-                                <ThemeProvider>{children}</ThemeProvider>
+                                <Providers>{children}</Providers>
                         </body>
                 </html>
         );

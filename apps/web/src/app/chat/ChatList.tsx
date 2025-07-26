@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiClient, type Conversation } from "@lib/api-client";
 import { Trash2 } from "lucide-react";
+import { useLanguage } from "@hooks/use-language";
 
 export default function ChatList({ token }: { token: string }) {
   const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (token) {
@@ -53,9 +55,9 @@ export default function ChatList({ token }: { token: string }) {
   return (
     <div className="max-w-6xl mx-auto py-28 px-2">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Conversations</h1>
+        <h1 className="text-2xl font-bold">{t("chat.conversations")}</h1>
         <button className="p-2 bg-primary text-primary-foreground rounded" onClick={handleNew}>
-          Nouvelle conversation
+          {t("chat.new")}
         </button>
       </div>
       <ul className="gap-2">
@@ -69,12 +71,12 @@ export default function ChatList({ token }: { token: string }) {
               onClick={() => handleDelete(c.id)}
             >
               <Trash2 className="w-4 h-4" />
-              <span className="sr-only">Supprimer</span>
+              <span className="sr-only">{t("chat.delete")}</span>
             </button>
           </li>
         ))}
         {conversations.length === 0 && (
-          <li className="text-center text-gray-400">Aucune conversation</li>
+          <li className="text-center text-gray-400">{t("chat.noConversations")}</li>
         )}
       </ul>
     </div>

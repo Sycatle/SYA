@@ -8,11 +8,12 @@ import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { ReactNode, HTMLAttributes, ImgHTMLAttributes, TableHTMLAttributes, ThHTMLAttributes, TdHTMLAttributes } from "react";
 
 function filterProps<T extends object>(props: T): T {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
   const { node, ref, ...rest } = props as any;
   return rest as T;
 }
 
-const components: { [key: string]: React.FC<any> } = {
+const components: { [key: string]: React.FC<Record<string, never>> } = {
   h1: ({ children, ...props }: { children?: ReactNode } & HTMLAttributes<HTMLHeadingElement>) => (
     <h1 className="w-full text-3xl font-bold mt-6 mb-4" {...filterProps(props)}>{children}</h1>
   ),
@@ -43,9 +44,10 @@ const components: { [key: string]: React.FC<any> } = {
   code({ inline, className, children, ...props }: { inline?: boolean; className?: string; children?: ReactNode } & HTMLAttributes<HTMLElement>) {
     const match = /language-(\w+)/.exec(className || "");
     return !inline && match ? (
-      <SyntaxHighlighter
-        style={oneDark as any}
-        language={match[1]}
+        <SyntaxHighlighter
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          style={oneDark as any}
+          language={match[1]}
         PreTag="div"
         customStyle={{
           borderRadius: "0.375rem",
@@ -81,7 +83,7 @@ const components: { [key: string]: React.FC<any> } = {
     <hr className="w-full my-6 border-zinc-300 dark:border-zinc-700" {...filterProps(props)} />
   ),
   img: (props: ImgHTMLAttributes<HTMLImageElement>) => (
-    <img className="w-full rounded max-w-full h-auto my-4" {...filterProps(props)} />
+    <img alt="" className="w-full rounded max-w-full h-auto my-4" {...filterProps(props)} />
   ),
   strong: ({ children, ...props }: { children?: ReactNode } & HTMLAttributes<HTMLElement>) => (
     <strong className="w-full font-bold" {...filterProps(props)}>{children}</strong>
@@ -93,7 +95,8 @@ const components: { [key: string]: React.FC<any> } = {
 
 // Patch for ESM/CJS compatibility
 export default function MarkdownToTailwind({ children }: { children?: ReactNode }) {
-	  // Patch for ESM/CJS compatibility
+  // Patch for ESM/CJS compatibility
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const Markdown = (ReactMarkdown as any).default || ReactMarkdown;
   return (
 	<Markdown remarkPlugins={[remarkGfm]} components={components}>

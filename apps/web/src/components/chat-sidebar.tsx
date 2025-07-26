@@ -18,6 +18,7 @@ import {
 import { Trash2 } from "lucide-react";
 import { NavUser } from "@web/components/nav-user";
 import Logo from "@components/Logo";
+import { useLanguage } from "@hooks/use-language";
 
 interface ChatSidebarProps {
 	token: string;
@@ -30,7 +31,8 @@ export default function ChatSidebar({
 	user,
 	currentId,
 }: ChatSidebarProps) {
-	const [conversations, setConversations] = useState<Conversation[]>([]);
+        const [conversations, setConversations] = useState<Conversation[]>([]);
+        const { t } = useLanguage();
 
 	useEffect(() => {
 		apiClient.setToken(token);
@@ -82,7 +84,7 @@ export default function ChatSidebar({
 						<SidebarMenuButton
 							asChild
 							size="lg"
-							tooltip="Accueil">
+                                                        tooltip={t("chat.home")}> 
 							<Link href="/chat">
 								<Logo className="h-8 w-8" />
 							</Link>
@@ -92,15 +94,16 @@ export default function ChatSidebar({
 						<SidebarMenuButton
 							size="lg"
 							onClick={handleNew}
-							tooltip="Nouvelle conversation">
-							Nouvelle conversation
-						</SidebarMenuButton>
+                                                        tooltip={t("chat.new")}
+                                                >
+                                                        {t("chat.new")}
+                                                </SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Conversations</SidebarGroupLabel>
+                                        <SidebarGroupLabel>{t("chat.conversations")}</SidebarGroupLabel>
 					<SidebarMenu>
 						{conversations.map((c) => (
 							<SidebarMenuItem key={c.id}>
@@ -113,15 +116,15 @@ export default function ChatSidebar({
 								</SidebarMenuButton>
 								<SidebarMenuAction showOnHover={true} onClick={() => handleDelete(c.id)}>
 									<Trash2 className="text-muted-foreground" />
-									<span className="sr-only">Supprimer</span>
+                                                                        <span className="sr-only">{t("chat.delete")}</span>
 								</SidebarMenuAction>
 							</SidebarMenuItem>
 						))}
 						{conversations.length === 0 && (
 							<SidebarMenuItem>
-								<span className="px-2 text-muted-foreground">
-									Aucune conversation
-								</span>
+                                                                <span className="px-2 text-muted-foreground">
+                                                                        {t("chat.noConversations")}
+                                                                </span>
 							</SidebarMenuItem>
 						)}
 					</SidebarMenu>

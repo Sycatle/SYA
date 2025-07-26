@@ -9,6 +9,7 @@ import {
 } from "@web/components/ui/sidebar";
 import { Separator } from "@web/components/ui/separator";
 import ChatTitle from "@web/components/chat-title";
+import en from "@web/languages/english.json";
 export const dynamic = "force-dynamic";
 
 
@@ -30,7 +31,7 @@ export default async function ChatLayout({
 		avatar: `https://eu.ui-avatars.com/api/?name=${encodeURIComponent(username)}&format=webp`,
 	};
 
-	let pageTitle = "Nouvelle conversation";
+        let pageTitle = en.chat.new;
 	if (params.id) {
 		try {
 			const client = new ApiClient();

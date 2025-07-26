@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "title": "SYA, your web assistant",
+    "description": "SYA is a web assistant that helps you browse the Internet."
+  },
+  "login": {
+    "title": "Sign in to SYA",
+    "subtitle": "Access your personal AI assistant",
+    "email": "Email address",
+    "password": "Password",
+    "login": "Sign in",
+    "noAccount": "No account yet?",
+    "register": "Create account",
+    "error": "Authentication error",
+    "backToHome": "Back to home",
+    "dataNotice": "Your data stays on your machine"
+  },
+  "register": {
+    "title": "Create your SYA account",
+    "subtitle": "Join your personal AI assistant",
+    "email": "Email address",
+    "password": "Password",
+    "displayName": "Display name (optional)",
+    "register": "Create my account",
+    "error": "Registration error",
+    "already": "Already registered?",
+    "login": "Sign in",
+    "backToHome": "Back to home",
+    "featuresTitle": "What you get:",
+    "features": [
+      "Personal and private AI assistant",
+      "Works 100% locally",
+      "Modern web interface",
+      "Multi-user support"
+    ],
+    "dataNotice": "Your data stays on your machine"
+  },
+  "chat": {
+    "new": "New conversation",
+    "conversations": "Conversations",
+    "noConversations": "No conversations",
+    "delete": "Delete",
+    "home": "Home"
+  }
+}
