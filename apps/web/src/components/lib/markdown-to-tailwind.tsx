@@ -92,7 +92,7 @@ const components: { [key: string]: React.FC<any> } = {
 };
 
 // Patch for ESM/CJS compatibility
-export function MarkdownToTailwind({ children }: { children?: ReactNode }) {
+export default function MarkdownToTailwind({ children }: { children?: ReactNode }) {
 	  // Patch for ESM/CJS compatibility
   const Markdown = (ReactMarkdown as any).default || ReactMarkdown;
   return (
