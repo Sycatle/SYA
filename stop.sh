@@ -1,1 +1,2 @@
-stop-sya.sh
+#!/bin/bash
+./stop-sya.sh
