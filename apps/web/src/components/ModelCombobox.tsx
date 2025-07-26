@@ -12,7 +12,7 @@ import {
   CommandGroup,
   CommandItem,
 } from "@components/ui/command";
-import { cn } from "@web/lib/utils";
+import { cn } from "@lib/utils";
 
 interface Props {
   models: string[];
