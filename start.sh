@@ -1,1 +1,2 @@
-start-sya.sh
+#!/bin/bash
+./start-sya.sh
