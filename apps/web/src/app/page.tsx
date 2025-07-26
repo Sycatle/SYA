@@ -301,7 +301,7 @@ export default function LandingPage() {
 						À propos de SYA
 					</h2>
 					<p className="text-xl text-gray-300 mb-8">
-						SYA (Simple Yet Advanced) est né d'une vision simple : créer un
+						SYA (Simplify Your Assistant) est né d'une vision simple : créer un
 						assistant IA personnel qui respecte votre vie privée tout en étant
 						puissant et facile à utiliser.
 					</p>
