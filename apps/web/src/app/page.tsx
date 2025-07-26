@@ -226,7 +226,7 @@ export default function LandingPage() {
                 href="https://github.com/RISK-alt/SYA/blob/main/README.md"
                 className="block w-full px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
               >
-                Applicartion Linux
+                Application Linux
               </Link>
               <Link 
                 href="https://github.com/RISK-alt/SYA/blob/main/README.md"
